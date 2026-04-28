@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://federicodeservi.com/sitemap-index.xml
+Sitemap: https://federicodeservi.github.io/federicodeservi_website/sitemap-index.xml

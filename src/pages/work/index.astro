@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CaseThumb from '../../components/CaseThumb.astro';
 import Reveals from '../../components/Reveals.astro';
+import { u } from '../../lib/url';
 
 const entries = await getCollection('work');
 const sorted = entries.sort((a, b) => a.data.order - b.data.order);
@@ -42,7 +43,7 @@ const otherWork = [
           <article class="work-list__item" data-reveal-group>
             <div class="work-list__thumb" data-reveal-item>
               <CaseThumb
-                href={`/work/${entry.id}`}
+                href={u(`/work/${entry.id}`)}
                 title={entry.data.title}
                 imageColor={entry.data.thumbColor}
                 ratio={entry.data.thumbRatio}
@@ -53,13 +54,13 @@ const otherWork = [
             <div class="work-list__meta" data-reveal-item>
               <p class="t-mono work-list__num">{entry.data.number}</p>
               <h2 class="t-h2 work-list__title">
-                <a href={`/work/${entry.id}`} data-cursor="link">{entry.data.title}</a>
+                <a href={u(`/work/${entry.id}`)} data-cursor="link">{entry.data.title}</a>
               </h2>
               <p class="t-mono work-list__caption">
                 {entry.data.client} · {entry.data.year} · {entry.data.role}
               </p>
               <p class="t-body-lg work-list__result">{entry.data.result}</p>
-              <a href={`/work/${entry.id}`} class="link-inline" data-cursor="link">→ apri progetto</a>
+              <a href={u(`/work/${entry.id}`)} class="link-inline" data-cursor="link">→ apri progetto</a>
             </div>
           </article>
         ))}

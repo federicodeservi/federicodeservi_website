@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Reveals from '../components/Reveals.astro';
+import { u } from '../lib/url';
 ---
 
 <BaseLayout title="404 — Pagina non trovata" description="La pagina che cerchi non esiste, o è stata spostata.">
@@ -15,15 +16,15 @@ import Reveals from '../components/Reveals.astro';
           Probabilmente è stata spostata, oppure il link era già un po' sbagliato di partenza.
         </p>
         <p class="not-found__cta" data-reveal>
-          <a href="/" class="btn" data-cursor="link">Torna alla home <span aria-hidden="true">→</span></a>
+          <a href={u('/')} class="btn" data-cursor="link">Torna alla home <span aria-hidden="true">→</span></a>
         </p>
         <p class="not-found__or t-mono" data-reveal>
           oppure:{' '}
-          <a href="/work" class="link-inline" data-cursor="link">/work</a>
+          <a href={u('/work')} class="link-inline" data-cursor="link">/work</a>
           {' · '}
-          <a href="/about" class="link-inline" data-cursor="link">/about</a>
+          <a href={u('/about')} class="link-inline" data-cursor="link">/about</a>
           {' · '}
-          <a href="/contact" class="link-inline" data-cursor="link">/contact</a>
+          <a href={u('/contact')} class="link-inline" data-cursor="link">/contact</a>
         </p>
       </div>
     </div>

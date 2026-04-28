@@ -5,13 +5,14 @@ import WordsMorph from '../components/WordsMorph.astro';
 import Marquee from '../components/Marquee.astro';
 import CaseThumb from '../components/CaseThumb.astro';
 import Reveals from '../components/Reveals.astro';
+import { u } from '../lib/url';
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: 'Federico de Servi',
   jobTitle: 'Designer, Brand-builder, Flutter Developer',
-  url: 'https://federicodeservi.com',
+  url: 'https://federicodeservi.github.io/federicodeservi_website',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Milano',
@@ -45,7 +46,7 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
           Lavoro da Milano, principalmente in remoto.
         </p>
         <p class="hero__cta-wrap" data-reveal>
-          <a href="/contact" class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
+          <a href={u('/contact')} class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
         </p>
       </div>
     </div>
@@ -105,7 +106,7 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
           <article class="work-card work-card--left" data-reveal-group>
             <div class="work-card__thumb" data-reveal-item>
               <CaseThumb
-                href="/work/power-pizza-counter"
+                href={u('/work/power-pizza-counter')}
                 title="Power Pizza Counter"
                 imageColor="#f4c81e"
                 ratio="16 / 10"
@@ -122,7 +123,7 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
               </dl>
               <h3 class="t-h3 work-card__title">Power Pizza Counter</h3>
               <p class="t-body-lg work-card__desc">Un'app per contare le pizze del podcast.</p>
-              <a class="link-inline" href="/work/power-pizza-counter" data-cursor="link">→ apri progetto</a>
+              <a class="link-inline" href={u('/work/power-pizza-counter')} data-cursor="link">→ apri progetto</a>
             </div>
           </article>
 
@@ -137,11 +138,11 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
               </dl>
               <h3 class="t-h3 work-card__title">Finalmente Gluten-free!</h3>
               <p class="t-body-lg work-card__desc">Identità + design del libro per il primo manuale gluten-free di Dany Resconi.</p>
-              <a class="link-inline" href="/work/dany-resconi-libro" data-cursor="link">→ apri progetto</a>
+              <a class="link-inline" href={u('/work/dany-resconi-libro')} data-cursor="link">→ apri progetto</a>
             </div>
             <div class="work-card__thumb" data-reveal-item>
               <CaseThumb
-                href="/work/dany-resconi-libro"
+                href={u('/work/dany-resconi-libro')}
                 title="Finalmente Gluten-free!"
                 imageColor="#a4d65e"
                 ratio="3 / 4"
@@ -155,7 +156,7 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
           <article class="work-card work-card--left" data-reveal-group>
             <div class="work-card__thumb" data-reveal-item>
               <CaseThumb
-                href="/work/dany-resconi-website"
+                href={u('/work/dany-resconi-website')}
                 title="Dany Resconi Website"
                 imageColor="#3a86ff"
                 ratio="16 / 10"
@@ -172,13 +173,13 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
               </dl>
               <h3 class="t-h3 work-card__title">Dany Resconi Website</h3>
               <p class="t-body-lg work-card__desc">Sito completo per il primo creator italiano gluten-free.</p>
-              <a class="link-inline" href="/work/dany-resconi-website" data-cursor="link">→ apri progetto</a>
+              <a class="link-inline" href={u('/work/dany-resconi-website')} data-cursor="link">→ apri progetto</a>
             </div>
           </article>
         </div>
 
         <div class="work__more" data-reveal>
-          <a href="/work" class="link-inline" data-cursor="link">→ See all work</a>
+          <a href={u('/work')} class="link-inline" data-cursor="link">→ See all work</a>
           <span class="work__sep" aria-hidden="true">·</span>
           <a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer" class="link-inline" data-cursor="link">Other on Behance ↗</a>
         </div>
@@ -246,7 +247,7 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
             Adesso lavoro con creator italiani che vogliono un prodotto — sito, app, libro — fatto bene.
           </p>
           <p data-reveal>
-            <a href="/about" class="link-inline" data-cursor="link">→ Più su di me</a>
+            <a href={u('/about')} class="link-inline" data-cursor="link">→ Più su di me</a>
           </p>
         </div>
       </div>
@@ -261,7 +262,7 @@ const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan de
       <div class="contact__content">
         <h2 class="t-h2" data-reveal>Hai un progetto<br />in mente?<br /><span class="t-italic">Parliamone.</span></h2>
         <p class="contact__cta" data-reveal>
-          <a href="/contact" class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
+          <a href={u('/contact')} class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
         </p>
       </div>
     </div>

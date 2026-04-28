@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionNumber from '../../components/SectionNumber.astro';
 import Reveals from '../../components/Reveals.astro';
+import { u } from '../../lib/url';
 
 export async function getStaticPaths() {
   const entries = await getCollection('work');
@@ -160,7 +161,7 @@ const jsonLd = {
           <nav class="case-nav" aria-label="Case study navigation" data-reveal>
             <div class="case-nav__col">
               {prev ? (
-                <a href={`/work/${prev.id}`} class="case-nav__link" data-cursor="link">
+                <a href={u(`/work/${prev.id}`)} class="case-nav__link" data-cursor="link">
                   <span class="t-mono">← Prev</span>
                   <span class="t-h3">{prev.data.title}</span>
                 </a>
@@ -169,14 +170,14 @@ const jsonLd = {
               )}
             </div>
             <div class="case-nav__col case-nav__col--center">
-              <a href="/work" class="case-nav__link" data-cursor="link">
+              <a href={u('/work')} class="case-nav__link" data-cursor="link">
                 <span class="t-mono">Index</span>
                 <span class="t-h3">/work</span>
               </a>
             </div>
             <div class="case-nav__col case-nav__col--right">
               {next ? (
-                <a href={`/work/${next.id}`} class="case-nav__link" data-cursor="link">
+                <a href={u(`/work/${next.id}`)} class="case-nav__link" data-cursor="link">
                   <span class="t-mono">Next →</span>
                   <span class="t-h3">{next.data.title}</span>
                 </a>

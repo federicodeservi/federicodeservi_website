@@ -11,6 +11,7 @@ import PageLoader from '../components/PageLoader.astro';
 import Curtain from '../components/Curtain.astro';
 import Footer from '../components/Footer.astro';
 import { ClientRouter } from 'astro:transitions';
+import { u } from '../lib/url';
 
 export interface Props {
   title: string;
@@ -29,6 +30,7 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImageUrl = new URL(u(ogImage), Astro.site).toString();
 const fullTitle = title === 'Federico de Servi' ? title : `${title} · Federico de Servi`;
 ---
 
@@ -43,19 +45,19 @@ const fullTitle = title === 'Federico de Servi' ? title : `${title} · Federico 
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={u('/favicon.svg')} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:locale" content="it_IT" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <meta name="theme-color" content="#051236" />
 

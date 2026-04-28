@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionNumber from '../components/SectionNumber.astro';
 import Reveals from '../components/Reveals.astro';
+import { u } from '../lib/url';
 
 const tools = ['Figma', 'Squarespace', 'Flutter', 'Adobe Suite'];
 
@@ -11,7 +12,7 @@ const jsonLd = {
   name: 'Federico de Servi',
   jobTitle: 'Designer, Brand-builder, Flutter Developer',
   description: 'Designer, brand-builder e flutter-dev a Milano. Lavoro con content creator italiani.',
-  url: 'https://federicodeservi.com/about',
+  url: 'https://federicodeservi.github.io/federicodeservi_website/about',
   knowsAbout: ['Design', 'Branding', 'Flutter', 'Editorial Design'],
   address: {
     '@type': 'PostalAddress',
@@ -135,7 +136,7 @@ const jsonLd = {
         <h2 class="t-h2" data-reveal>Get in touch.</h2>
         <p class="t-body-lg" data-reveal>Hai un progetto in mente? Parliamone.</p>
         <p class="about-block__cta" data-reveal>
-          <a href="/contact" class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
+          <a href={u('/contact')} class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
         </p>
       </div>
     </div>

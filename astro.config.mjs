@@ -3,7 +3,8 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://federicodeservi.com',
+  site: 'https://federicodeservi.github.io',
+  base: '/federicodeservi_website',
   output: 'static',
   build: { format: 'directory' },
   integrations: [mdx(), sitemap()],
