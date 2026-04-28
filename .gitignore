@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # astro
 .astro/
+
+# extracted reference assets (source.zip)
+_ref/
