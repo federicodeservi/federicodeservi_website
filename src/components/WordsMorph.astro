@@ -1,115 +1,109 @@
 ---
-// 3D rotateX flip cycling through words in place. Wrapper width sized
-// to the longest word to avoid layout shift.
+// v5 Y2K Glitch — letter-by-letter morph cycling through words.
+// Letters fade up + rotate in, fade up + rotate out.
 export interface Props {
   words: string[];
-  italicIdx?: number[]; // indices to render in Instrument Serif italic
 }
-const { words, italicIdx = [] } = Astro.props;
+const { words } = Astro.props;
+const initial = words[0] ?? '';
 ---
 
-<span class="words-3d" data-words-morph>
-  <span class="words-3d__measure" aria-hidden="true">
-    {words.map((w) => <span>{w}</span>)}
-  </span>
-  <span class="words-3d__inner">
-    {words.map((w, i) => (
-      <span class={`words-3d__word${italicIdx.includes(i) ? ' words-3d__word--italic' : ''}`}>{w}</span>
-    ))}
-  </span>
+<span class="morph-wrap" data-morph data-words={JSON.stringify(words)}>
+  {[...initial].map((ch) => (
+    <span class="morph-letter">{ch === ' ' ? ' ' : ch}</span>
+  ))}
 </span>
 
 <style>
-  .words-3d {
-    perspective: 1000px;
+  .morph-wrap {
     display: inline-block;
     position: relative;
     vertical-align: baseline;
+    line-height: 0.86;
   }
 
-  .words-3d__measure {
-    visibility: hidden;
-    pointer-events: none;
+  .morph-letter {
     display: inline-block;
-    position: relative;
-  }
-
-  .words-3d__measure span {
-    display: block;
-    line-height: inherit;
-    white-space: nowrap;
-  }
-
-  /* The first measure span sits in normal flow to size the wrapper width;
-     subsequent ones stack to ensure max-width detection. */
-  .words-3d__measure span + span {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .words-3d__inner {
-    position: absolute;
-    inset: 0;
-    transform-style: preserve-3d;
-  }
-
-  .words-3d__word {
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: nowrap;
-    backface-visibility: hidden;
-    color: var(--brand-blue);
+    animation: letterIn 600ms var(--easing-edit) both;
     will-change: transform, opacity;
   }
 
-  .words-3d__word--italic {
-    font-family: var(--font-italic);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
+  .morph-letter.out {
+    animation: letterOut 400ms var(--easing-edit) both;
+  }
+
+  @keyframes letterIn {
+    from { opacity: 0; transform: translateY(40%) rotate(6deg); }
+    to   { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  @keyframes letterOut {
+    from { opacity: 1; transform: translateY(0) rotate(0); }
+    to   { opacity: 0; transform: translateY(-40%) rotate(-6deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .morph-letter,
+    .morph-letter.out { animation: none; }
   }
 </style>
 
 <script>
-  import { gsap } from 'gsap';
-  import { reducedMotion } from '../lib/motion';
-
   const setup = () => {
-    const wrappers = document.querySelectorAll<HTMLElement>('[data-words-morph]');
-    wrappers.forEach((wrap) => {
-      const words = Array.from(wrap.querySelectorAll<HTMLElement>('.words-3d__word'));
+    document.querySelectorAll<HTMLElement>('[data-morph]').forEach((wrap) => {
+      const raw = wrap.dataset.words || '[]';
+      let words: string[] = [];
+      try { words = JSON.parse(raw); } catch { return; }
       if (!words.length) return;
 
-      // initial state: only first word visible
-      gsap.set(words, { rotateX: 90, opacity: 0 });
-      gsap.set(words[0]!, { rotateX: 0, opacity: 1 });
+      let idx = 0;
 
-      if (reducedMotion()) {
-        // simple fade cycle, no 3D
-        gsap.set(words, { rotateX: 0 });
-        let i = 0;
-        setInterval(() => {
-          gsap.to(words[i]!, { opacity: 0, duration: 0.2 });
-          i = (i + 1) % words.length;
-          gsap.to(words[i]!, { opacity: 1, duration: 0.2 });
-        }, 2800);
-        return;
+      const renderWord = (word: string) => {
+        wrap.innerHTML = '';
+        [...word].forEach((ch, i) => {
+          const span = document.createElement('span');
+          span.className = 'morph-letter';
+          span.textContent = ch === ' ' ? ' ' : ch;
+          span.style.animationDelay = `${i * 30}ms`;
+          wrap.appendChild(span);
+        });
+      };
+
+      const swap = () => {
+        const letters = wrap.querySelectorAll<HTMLElement>('.morph-letter');
+        letters.forEach((l, i) => {
+          l.classList.add('out');
+          l.style.animationDelay = `${i * 25}ms`;
+        });
+        setTimeout(() => {
+          idx = (idx + 1) % words.length;
+          renderWord(words[idx]!);
+        }, 500);
+      };
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return; // keep static initial word
+
+      // Replace initial server-rendered letters with managed render so
+      // the first cycle is identical to subsequent ones.
+      renderWord(words[0]!);
+      const handle = window.setInterval(swap, 2800);
+      // Store handle for cleanup on Astro view-transitions
+      (wrap as HTMLElement & { _morphHandle?: number })._morphHandle = handle;
+    });
+  };
+
+  const teardown = () => {
+    document.querySelectorAll<HTMLElement>('[data-morph]').forEach((wrap) => {
+      const w = wrap as HTMLElement & { _morphHandle?: number };
+      if (w._morphHandle) {
+        clearInterval(w._morphHandle);
+        w._morphHandle = undefined;
       }
-
-      const tl = gsap.timeline({ repeat: -1, defaults: { ease: 'power2.inOut' } });
-      words.forEach((word, i) => {
-        const next = words[(i + 1) % words.length]!;
-        tl.to({}, { duration: 2.0 })
-          .set(next, { rotateX: 90, opacity: 0 })
-          .to(word, { rotateX: -90, opacity: 0, duration: 0.5 })
-          .to(next, { rotateX: 0, opacity: 1, duration: 0.5 }, '<');
-      });
     });
   };
 
   setup();
+  document.addEventListener('astro:before-swap', teardown);
   document.addEventListener('astro:after-swap', setup);
 </script>

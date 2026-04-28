@@ -1,34 +1,43 @@
 ---
+// v5 Y2K Glitch case thumb — deep-navy gradient placeholder, magenta/cyan
+// canvas liquid hover, mono meta caption bottom-left.
 export interface Props {
   href: string;
   title: string;
-  imageColor?: string; // CSS color for placeholder bg
+  imageColor?: string;
   imageSrc?: string;
   alt?: string;
-  ratio?: string; // aspect-ratio CSS, default '16/10'
+  ratio?: string;
+  caption?: string;
+  cursorLabel?: string;
 }
 const {
   href,
   title,
-  imageColor = '#1740a9',
+  imageColor,
   imageSrc,
   alt = '',
-  ratio = '16 / 10',
+  ratio = '4 / 5',
+  caption,
+  cursorLabel = 'apri progetto',
 } = Astro.props;
 ---
 
-<a class="case-thumb" href={href} data-cursor="image" data-parallax aria-label={title}>
-  <div class="case-thumb__media" style={`aspect-ratio: ${ratio}; --thumb-color: ${imageColor};`}>
+<a
+  class="case-thumb"
+  href={href}
+  data-cursor={cursorLabel}
+  data-parallax
+  aria-label={title}
+  style={imageColor ? `--thumb-tint: ${imageColor};` : ''}
+>
+  <div class="case-thumb__media" style={`aspect-ratio: ${ratio};`}>
     {imageSrc ? (
       <img src={imageSrc} alt={alt} loading="lazy" decoding="async" />
     ) : (
-      <div class="case-thumb__placeholder">
-        <span class="case-thumb__placeholder-label">placeholder · {title}</span>
-      </div>
+      <span class="case-thumb__placeholder">placeholder · {title}</span>
     )}
-    <div class="case-thumb__overlay">
-      <slot name="services" />
-    </div>
+    {caption && <span class="case-thumb__meta">{caption}</span>}
   </div>
 </a>
 
@@ -37,16 +46,14 @@ const {
     display: block;
     position: relative;
     overflow: hidden;
-    border-radius: var(--r-sm);
-    cursor: none;
+    border-radius: 0;
   }
 
   .case-thumb__media {
     position: relative;
     overflow: hidden;
-    background: var(--thumb-color, var(--brand-blue));
-    transition: transform var(--d-hover) var(--easeOutQuart),
-                filter var(--d-hover) var(--easeOutQuart);
+    background: var(--bg-deep);
+    transition: filter var(--d-hover) var(--easeOutQuart);
   }
 
   .case-thumb__media img {
@@ -59,67 +66,132 @@ const {
   .case-thumb__placeholder {
     position: absolute;
     inset: 0;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg, var(--thumb-color, var(--brand-blue)) 0%, color-mix(in oklab, var(--thumb-color) 70%, #000) 100%);
-    color: var(--brand-yellow);
-  }
-
-  .case-thumb__placeholder-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(240, 237, 255, 0.25);
     font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    opacity: 0.5;
+    letter-spacing: 0.1em;
+    z-index: 1;
+    text-align: center;
+    padding: 0 2rem;
   }
 
-  .case-thumb__overlay {
+  .case-thumb__meta {
     position: absolute;
-    inset: auto 0 0 0;
-    padding: 1.6rem 2rem;
-    background: linear-gradient(to top, rgba(5, 18, 54, 0.85), transparent);
-    color: var(--brand-yellow);
+    bottom: 1.6rem;
+    left: 1.6rem;
     font-family: var(--font-mono);
-    font-size: 1.3rem;
+    font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    transform: translateY(101%);
-    transition: transform var(--d-hover) var(--easeOutQuart);
+    letter-spacing: 0.08em;
+    color: rgba(240, 237, 255, 0.6);
+    z-index: 2;
   }
 
-  .case-thumb:hover .case-thumb__overlay {
-    transform: translateY(0);
-  }
-
-  /* No-WebGL fallback hover effect */
-  .case-thumb:hover .case-thumb__media {
-    transform: scale(1.03);
-    filter: brightness(1.05);
+  .case-thumb canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 0;
+    pointer-events: none;
   }
 </style>
 
 <script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-  import { reducedMotion } from '../lib/motion';
-
-  gsap.registerPlugin(ScrollTrigger);
-
   const setup = () => {
-    if (reducedMotion()) return;
-    document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
-      const img = el.querySelector<HTMLElement>('img, .case-thumb__placeholder');
-      if (!img) return;
-      ScrollTrigger.getAll().filter((t) => t.trigger === el).forEach((t) => t.kill());
-      gsap.fromTo(
-        img,
-        { yPercent: -8 },
-        {
-          yPercent: 8,
-          ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 1 },
-        },
-      );
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    document.querySelectorAll<HTMLElement>('.case-thumb').forEach((thumb) => {
+      if ((thumb as HTMLElement & { _liquidWired?: boolean })._liquidWired) return;
+      (thumb as HTMLElement & { _liquidWired?: boolean })._liquidWired = true;
+
+      const media = thumb.querySelector<HTMLElement>('.case-thumb__media');
+      if (!media) return;
+
+      const canvas = document.createElement('canvas');
+      media.insertBefore(canvas, media.firstChild);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let w = 0;
+      let h = 0;
+      let mouseX = 0.5;
+      let mouseY = 0.5;
+      let active = 0;
+      let amp = 0;
+      let raf = 0;
+
+      const resize = () => {
+        const r = thumb.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        w = canvas.width = r.width * dpr;
+        h = canvas.height = r.height * dpr;
+        canvas.style.width = r.width + 'px';
+        canvas.style.height = r.height + 'px';
+      };
+      resize();
+      window.addEventListener('resize', resize);
+
+      thumb.addEventListener('mousemove', (e) => {
+        const r = thumb.getBoundingClientRect();
+        mouseX = (e.clientX - r.left) / r.width;
+        mouseY = (e.clientY - r.top) / r.height;
+      });
+      thumb.addEventListener('mouseenter', () => { active = 1; });
+      thumb.addEventListener('mouseleave', () => { active = 0; });
+
+      const draw = () => {
+        amp += ((active ? 1 : 0) - amp) * 0.08;
+        ctx.clearRect(0, 0, w, h);
+
+        // Aurora base — deep navy / purple gradient
+        const g = ctx.createLinearGradient(0, 0, w, h);
+        g.addColorStop(0, '#1A0E55');
+        g.addColorStop(0.5, '#3A0A7A');
+        g.addColorStop(1, '#050018');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+
+        if (amp > 0.01) {
+          const dpr = window.devicePixelRatio || 1;
+          const cx = mouseX * w;
+          const cy = mouseY * h;
+          const t = Date.now() * 0.002;
+
+          for (let i = 0; i < 8; i++) {
+            const radius = (60 + i * 50) * dpr * (1 + amp * 0.5);
+            const offset = Math.sin(t + i * 0.6) * 20 * amp;
+            ctx.beginPath();
+            ctx.arc(cx + offset, cy + offset, radius, 0, Math.PI * 2);
+            ctx.strokeStyle =
+              i % 2 === 0
+                ? `rgba(255, 45, 157, ${(0.1 - i * 0.008) * amp})`
+                : `rgba(0, 240, 255, ${(0.1 - i * 0.008) * amp})`;
+            ctx.lineWidth = 1.5 * dpr;
+            ctx.stroke();
+          }
+
+          const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 220 * amp);
+          glow.addColorStop(0, `rgba(255, 45, 157, ${0.4 * amp})`);
+          glow.addColorStop(0.5, `rgba(0, 240, 255, ${0.2 * amp})`);
+          glow.addColorStop(1, 'rgba(0, 240, 255, 0)');
+          ctx.fillStyle = glow;
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        raf = requestAnimationFrame(draw);
+      };
+      draw();
+
+      // Cleanup hook for view-transitions
+      (thumb as HTMLElement & { _liquidStop?: () => void })._liquidStop = () => {
+        cancelAnimationFrame(raf);
+      };
     });
   };
 

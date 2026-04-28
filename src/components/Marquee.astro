@@ -1,4 +1,5 @@
 ---
+// v5 Y2K Glitch marquee — logo-pill items with ✦ separator.
 export interface Props {
   items: { label: string; href?: string }[];
 }
@@ -8,14 +9,13 @@ const doubled = [...items, ...items];
 
 <div class="marquee" data-marquee>
   <div class="marquee__track" data-marquee-track>
-    {doubled.map((item) => (
-      <span class="marquee__item">
-        {item.href ? (
-          <a href={item.href} target="_blank" rel="noopener noreferrer">{item.label}</a>
-        ) : item.label}
-        <span class="marquee__sep" aria-hidden="true">·</span>
-      </span>
-    ))}
+    {doubled.map((item) =>
+      item.href ? (
+        <a class="logo-pill" href={item.href} target="_blank" rel="noopener noreferrer">{item.label}</a>
+      ) : (
+        <span class="logo-pill">{item.label}</span>
+      )
+    )}
   </div>
 </div>
 
@@ -23,61 +23,49 @@ const doubled = [...items, ...items];
   .marquee {
     overflow: hidden;
     width: 100%;
-    filter: grayscale(1);
-    opacity: 0.6;
-    transition: filter var(--d-hover) var(--easeOutQuart),
-                opacity var(--d-hover) var(--easeOutQuart);
-  }
-
-  .marquee:hover {
-    filter: grayscale(0);
-    opacity: 1;
+    margin: 0 calc(-1 * var(--pad));
+    padding: 4rem 0;
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
   }
 
   .marquee__track {
-    display: inline-flex;
-    align-items: center;
+    display: flex;
     gap: 6.4rem;
-    white-space: nowrap;
+    width: max-content;
+    align-items: center;
     will-change: transform;
+    animation: marqueeScroll 22s linear infinite;
   }
 
-  .marquee__item {
+  @keyframes marqueeScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .logo-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6.4rem;
+    gap: 1.2rem;
+    padding: 0 1.2rem;
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(40px, 6vw, 96px);
-    line-height: 1;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 3.8rem;
+    letter-spacing: -0.02em;
+    color: rgba(240, 237, 255, 0.5);
+    transition: color 250ms;
+    white-space: nowrap;
   }
 
-  .marquee__sep {
-    opacity: 0.5;
+  .logo-pill:hover { color: var(--accent-warm); }
+
+  .logo-pill::before {
+    content: '✦';
+    color: rgba(240, 237, 255, 0.25);
+    font-size: 2.4rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track { animation: none; }
   }
 </style>
-
-<script>
-  import { gsap } from 'gsap';
-  import { reducedMotion } from '../lib/motion';
-
-  const setup = () => {
-    const tracks = document.querySelectorAll<HTMLElement>('[data-marquee-track]');
-    tracks.forEach((track) => {
-      gsap.killTweensOf(track);
-      gsap.set(track, { xPercent: 0 });
-      if (reducedMotion()) return;
-      gsap.to(track, {
-        xPercent: -50,
-        duration: 30,
-        ease: 'none',
-        repeat: -1,
-      });
-    });
-  };
-
-  setup();
-  document.addEventListener('astro:after-swap', setup);
-</script>
