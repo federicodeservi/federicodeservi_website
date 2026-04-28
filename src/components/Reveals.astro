@@ -1,47 +1,55 @@
 ---
-// Adds .is-revealed class to data-reveal / data-reveal-item elements
-// when they enter viewport. Animation itself (blur+opacity) is in CSS.
+// Global scroll-reveal binder. Looks for [data-reveal] and [data-reveal-group].
 ---
 
 <script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { reducedMotion } from '../lib/motion';
+
+  gsap.registerPlugin(ScrollTrigger);
 
   const setup = () => {
     if (reducedMotion()) {
-      document
-        .querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-item]')
-        .forEach((el) => el.classList.add('is-revealed'));
+      document.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-item]').forEach((el) => {
+        gsap.set(el, { opacity: 1, y: 0 });
+      });
       return;
     }
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-revealed');
-          io.unobserve(entry.target);
-        });
-      },
-      { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
-    );
-
-    document
-      .querySelectorAll<HTMLElement>('[data-reveal]')
-      .forEach((el) => io.observe(el));
-
-    document.querySelectorAll<HTMLElement>('[data-reveal-stagger]').forEach((group) => {
-      const items = group.querySelectorAll<HTMLElement>('[data-reveal-item]');
-      items.forEach((el, i) => {
-        el.style.setProperty('--i', String(i));
-        io.observe(el);
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+      gsap.from(el, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
       });
     });
+
+    document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach((group) => {
+      const items = group.querySelectorAll<HTMLElement>('[data-reveal-item]');
+      if (!items.length) return;
+      gsap.from(items, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.1,
+        scrollTrigger: { trigger: group, start: 'top 80%', once: true },
+      });
+    });
+
+    ScrollTrigger.refresh();
   };
 
+  // Slight delay so loader/curtain settle before triggers compute.
+  const delayed = () => setTimeout(setup, 50);
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setup);
+    document.addEventListener('DOMContentLoaded', delayed);
   } else {
-    setup();
+    delayed();
   }
-  document.addEventListener('astro:after-swap', setup);
+  document.addEventListener('astro:after-swap', delayed);
 </script>

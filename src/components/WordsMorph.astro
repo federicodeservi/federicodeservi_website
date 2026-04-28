@@ -1,99 +1,109 @@
 ---
-// Words morph using opacity + blur crossfade — the fromanother signature.
-// Words stack via grid, only the active one is fully visible.
+// v5 Y2K Glitch — letter-by-letter morph cycling through words.
+// Letters fade up + rotate in, fade up + rotate out.
 export interface Props {
   words: string[];
-  italicIdx?: number[];
-  interval?: number; // ms between swaps
 }
-const { words, italicIdx = [], interval = 2400 } = Astro.props;
+const { words } = Astro.props;
+const initial = words[0] ?? '';
 ---
 
-<span class="words" data-words-morph data-interval={interval}>
-  {words.map((w, i) => (
-    <span
-      class={`words__word${italicIdx.includes(i) ? ' words__word--italic' : ''}${i === 0 ? ' is-active' : ''}`}
-      data-word-idx={i}
-    >
-      {w}
-    </span>
+<span class="morph-wrap" data-morph data-words={JSON.stringify(words)}>
+  {[...initial].map((ch) => (
+    <span class="morph-letter">{ch === ' ' ? ' ' : ch}</span>
   ))}
 </span>
 
 <style>
-  .words {
-    display: inline-grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
+  .morph-wrap {
+    display: inline-block;
+    position: relative;
     vertical-align: baseline;
+    line-height: 0.86;
   }
 
-  .words > * {
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
+  .morph-letter {
+    display: inline-block;
+    animation: letterIn 600ms var(--easing-edit) both;
+    will-change: transform, opacity;
   }
 
-  .words__word {
-    white-space: nowrap;
-    text-wrap: nowrap;
-    word-wrap: nowrap;
-    opacity: 0;
-    filter: blur(10px);
-    transition:
-      opacity var(--d-reveal) var(--easeOutQuart),
-      filter var(--d-reveal) var(--easeOutQuart);
-    will-change: opacity, filter;
-    color: var(--brand-blue);
+  .morph-letter.out {
+    animation: letterOut 400ms var(--easing-edit) both;
   }
 
-  .words__word.is-active {
-    opacity: 1;
-    filter: blur(0);
+  @keyframes letterIn {
+    from { opacity: 0; transform: translateY(40%) rotate(6deg); }
+    to   { opacity: 1; transform: translateY(0) rotate(0); }
   }
 
-  .words__word--italic {
-    font-family: var(--font-ivory);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
+  @keyframes letterOut {
+    from { opacity: 1; transform: translateY(0) rotate(0); }
+    to   { opacity: 0; transform: translateY(-40%) rotate(-6deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .morph-letter,
+    .morph-letter.out { animation: none; }
   }
 </style>
 
 <script>
-  import { reducedMotion } from '../lib/motion';
-
   const setup = () => {
-    document.querySelectorAll<HTMLElement>('[data-words-morph]').forEach((wrap) => {
-      const words = Array.from(wrap.querySelectorAll<HTMLElement>('.words__word'));
-      if (words.length < 2) return;
+    document.querySelectorAll<HTMLElement>('[data-morph]').forEach((wrap) => {
+      const raw = wrap.dataset.words || '[]';
+      let words: string[] = [];
+      try { words = JSON.parse(raw); } catch { return; }
+      if (!words.length) return;
 
-      const interval = parseInt(wrap.dataset.interval || '2400', 10);
       let idx = 0;
 
-      const tick = () => {
-        const prev = words[idx]!;
-        idx = (idx + 1) % words.length;
-        const next = words[idx]!;
-        prev.classList.remove('is-active');
-        next.classList.add('is-active');
+      const renderWord = (word: string) => {
+        wrap.innerHTML = '';
+        [...word].forEach((ch, i) => {
+          const span = document.createElement('span');
+          span.className = 'morph-letter';
+          span.textContent = ch === ' ' ? ' ' : ch;
+          span.style.animationDelay = `${i * 30}ms`;
+          wrap.appendChild(span);
+        });
       };
 
-      if (reducedMotion()) return;
-
-      // Wait for the page loader to finish before starting
-      const start = () => {
-        setInterval(tick, interval);
+      const swap = () => {
+        const letters = wrap.querySelectorAll<HTMLElement>('.morph-letter');
+        letters.forEach((l, i) => {
+          l.classList.add('out');
+          l.style.animationDelay = `${i * 25}ms`;
+        });
+        setTimeout(() => {
+          idx = (idx + 1) % words.length;
+          renderWord(words[idx]!);
+        }, 500);
       };
 
-      if (sessionStorage.getItem('fds-loader-shown') === '1') {
-        start();
-      } else {
-        setTimeout(start, 2400);
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return; // keep static initial word
+
+      // Replace initial server-rendered letters with managed render so
+      // the first cycle is identical to subsequent ones.
+      renderWord(words[0]!);
+      const handle = window.setInterval(swap, 2800);
+      // Store handle for cleanup on Astro view-transitions
+      (wrap as HTMLElement & { _morphHandle?: number })._morphHandle = handle;
+    });
+  };
+
+  const teardown = () => {
+    document.querySelectorAll<HTMLElement>('[data-morph]').forEach((wrap) => {
+      const w = wrap as HTMLElement & { _morphHandle?: number };
+      if (w._morphHandle) {
+        clearInterval(w._morphHandle);
+        w._morphHandle = undefined;
       }
     });
   };
 
   setup();
+  document.addEventListener('astro:before-swap', teardown);
   document.addEventListener('astro:after-swap', setup);
 </script>

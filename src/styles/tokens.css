@@ -1,60 +1,92 @@
-/* Design tokens — palette, easings, fluid font-size, layout grid.
-   Extracted verbatim from the fromanother.love bundle. */
+/* Design tokens — v5 Y2K Glitch.
+   Single source of truth. In case of conflict with other files: this wins. */
 
 :root {
-  /* Palette */
-  --brand-yellow: #fffde2;
-  --brand-dark-blue: #051236;
-  --brand-blue: #1740a9;
-  --text-secondary: rgba(255, 253, 226, 0.6);
-  --text-disabled: rgba(255, 253, 226, 0.3);
+  /* ===== v5 Glitch palette ===== */
+  --bg: #0A0524;
+  --bg-deep: #050018;
+  --bg-creme: #120833;
+  --ink: #F0EDFF;
+  --ink-muted: #B8B0E8;
+  --ink-faint: #6E64A8;
+  --rule: rgba(232, 228, 255, 0.14);
+  --rule-strong: rgba(232, 228, 255, 0.18);
+  --accent-warm: #FF2D9D;
+  --accent-cool: #00F0FF;
+  --accent-lime: #C5F02E;
+  --aurora: linear-gradient(135deg, #1A0E55 0%, #3A0A7A 35%, #0A0524 70%);
 
-  /* Easings */
+  /* Backwards-compat aliases for non-home pages still using legacy names */
+  --brand-yellow: var(--ink);
+  --brand-dark-blue: var(--bg);
+  --brand-blue: var(--accent-cool);
+  --text-secondary: var(--ink-muted);
+  --text-disabled: var(--ink-faint);
+
+  /* Easing */
   --easeOutQuart: cubic-bezier(0.165, 0.84, 0.44, 1);
   --easeInOutQuart: cubic-bezier(0.76, 0, 0.24, 1);
   --easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
+  --easing-settle: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --easing-edit: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* Durations — fromanother is slow + decisive */
-  --d-micro: 0.4s;
-  --d-base: 0.8s;
-  --d-reveal: 1.4s;
-  --d-page: 1.4s;
+  /* Durations */
+  --d-micro: 0.2s;
+  --d-hover: 0.4s;
+  --d-reveal: 0.8s;
+  --d-page: 1.2s;
 
-  /* Fonts — free analogues for TWK Lausanne / Herbik / Ivory */
-  --font-twk: "Bricolage Grotesque Variable", system-ui, sans-serif;
-  --font-herbik: "DM Sans Variable", system-ui, sans-serif;
-  --font-ivory: "Instrument Serif", Georgia, serif;
+  /* Fonts — Onest Variable as closest free Fontsource match for Switzer.
+     Inter as body fallback (also Switzer-adjacent geometric grotesque). */
+  --font-body: "Onest Variable", "Inter", system-ui, sans-serif;
+  --font-display: "Onest Variable", system-ui, sans-serif;
+  --font-italic: "Instrument Serif", Georgia, serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
   /* Layout */
   --gap-x: 1.6rem;
   --padding-x: 1.6rem;
+  --pad: 1.6rem;
   --columns: 6;
+
+  /* Radii */
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-pill: 999px;
 }
 
-/* Fluid root font-size — verbatim fromanother */
-html, body {
+/* Fluid root font-size — fromanother-style px-equivalent rems */
+html {
   font-size: max(2.6666666667vw, 1px);
 }
 
 @media (min-width: 768px) {
-  html, body {
+  html {
     font-size: max(1.3020833333vw, 1px);
   }
-  body {
+  :root {
     --gap-x: 3.2rem;
     --padding-x: 3.2rem;
+    --pad: 3.2rem;
     --columns: 8;
   }
 }
 
 @media (min-width: 1200px) {
-  html, body {
+  html {
     font-size: max(0.5208333333vw, 1px);
   }
-  body {
+  :root {
     --gap-x: 2.4rem;
-    --padding-x: 4.8rem;
+    --padding-x: 3.2rem;
+    --pad: 3.2rem;
     --columns: 14;
   }
 }
+
+/* Inverted section helper — v5 uses deep navy as inverted */
+.section--invert {
+  background-color: var(--bg-deep);
+  color: var(--ink);
+}
+.section--invert a { color: var(--ink); }

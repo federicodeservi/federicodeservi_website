@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
@@ -6,7 +7,7 @@ export default defineConfig({
   base: '/federicodeservi_website',
   output: 'static',
   build: { format: 'directory' },
-  integrations: [sitemap()],
+  integrations: [mdx(), sitemap()],
   vite: {
     ssr: {
       noExternal: ['gsap', 'lenis', 'ogl'],

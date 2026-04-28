@@ -1,211 +1,169 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CaseThumb from '../../components/CaseThumb.astro';
 import Reveals from '../../components/Reveals.astro';
-import DisplacementImage from '../../components/DisplacementImage.astro';
 import { u } from '../../lib/url';
 
 const entries = await getCollection('work');
 const sorted = entries.sort((a, b) => a.data.order - b.data.order);
 
 const otherWork = [
-  { title: 'Smart Roadways',  href: 'https://www.behance.net/federicodeservi' },
+  { title: 'Smart Roadways', href: 'https://www.behance.net/federicodeservi' },
   { title: 'Klimu Spaceships', href: 'https://www.behance.net/federicodeservi' },
-  { title: 'Notami',           href: 'https://www.behance.net/federicodeservi' },
-  { title: 'InBuoneMani',      href: 'https://www.behance.net/federicodeservi' },
+  { title: 'Notami', href: 'https://www.behance.net/federicodeservi' },
+  { title: 'InBuoneMani', href: 'https://www.behance.net/federicodeservi' },
 ];
 ---
 
 <BaseLayout
   title="Work"
   description="Selected work, 2023–2025. Tre progetti dettagliati: Power Pizza Counter, Finalmente Gluten-free!, Dany Resconi Website."
-  hideScrollIndicator
 >
   <Reveals />
 
-  <section class="work-hero">
-    <div class="container">
-      <p class="work-hero__eyebrow t-italic-sm" data-reveal>Work / index</p>
-      <h1 class="work-hero__title" data-reveal>
-        <span>Selected work,</span>
-        <span class="work-hero__title-italic">2023 — 2025</span>.
-      </h1>
+  <section class="section section--work-hero">
+    <div class="section__inner grid">
+      <div class="work-hero">
+        <p class="t-mono work-hero__eyebrow" data-reveal>WORK / index</p>
+        <h1 class="t-h1" data-reveal>Selected work,<br /><span class="t-italic">2023–2025</span>.</h1>
+        <ul class="work-hero__bullets" data-reveal-group>
+          <li data-reveal-item>3 progetti dettagliati qui sotto</li>
+          <li data-reveal-item>Altri lavori minori in fondo</li>
+          <li data-reveal-item>Archive completo su Behance ↗</li>
+        </ul>
+      </div>
     </div>
   </section>
 
-  <section class="work-list">
-    <div class="container">
-      {sorted.map((entry) => (
-        <article class="work-list__item" data-reveal-stagger>
-          <div class="work-list__thumb" data-reveal-item>
-            <a class="work-list__thumb-link" href={u(`/work/${entry.id}`)} aria-label={entry.data.title} data-cursor="image">
-              <DisplacementImage color={entry.data.thumbColor} aspect={entry.data.thumbRatio} />
-            </a>
-          </div>
-          <div class="work-list__meta" data-reveal-item>
-            <p class="work-list__num">{entry.data.number}</p>
-            <h2 class="work-list__title">
-              <a href={u(`/work/${entry.id}`)} class="hover-line">{entry.data.title}</a>
-            </h2>
-            <p class="work-list__caption">
-              <span>{entry.data.client}</span> · <span>{entry.data.year}</span> · <span>{entry.data.role}</span>
-            </p>
-            <p class="work-list__result">{entry.data.result}</p>
-            <a href={u(`/work/${entry.id}`)} class="work-list__cta hover-line">→ apri progetto</a>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="other-work">
-    <div class="container">
-      <h2 class="other-work__heading t-h3" data-reveal>Other selected work</h2>
-      <ul class="other-work__list" data-reveal-stagger>
-        {otherWork.map((w) => (
-          <li class="other-work__item" data-reveal-item>
-            <a href={w.href} target="_blank" rel="noopener noreferrer" class="other-work__link">
-              <span class="other-work__title">{w.title}</span>
-              <span class="other-work__label">Behance ↗</span>
-            </a>
-          </li>
+  <section class="section section--work-list">
+    <div class="section__inner grid">
+      <div class="work-list">
+        {sorted.map((entry) => (
+          <article class="work-list__item" data-reveal-group>
+            <div class="work-list__thumb" data-reveal-item>
+              <CaseThumb
+                href={u(`/work/${entry.id}`)}
+                title={entry.data.title}
+                imageColor={entry.data.thumbColor}
+                ratio={entry.data.thumbRatio}
+              >
+                <span slot="services">{entry.data.services}</span>
+              </CaseThumb>
+            </div>
+            <div class="work-list__meta" data-reveal-item>
+              <p class="t-mono work-list__num">{entry.data.number}</p>
+              <h2 class="t-h2 work-list__title">
+                <a href={u(`/work/${entry.id}`)} data-cursor="link">{entry.data.title}</a>
+              </h2>
+              <p class="t-mono work-list__caption">
+                {entry.data.client} · {entry.data.year} · {entry.data.role}
+              </p>
+              <p class="t-body-lg work-list__result">{entry.data.result}</p>
+              <a href={u(`/work/${entry.id}`)} class="link-inline" data-cursor="link">→ apri progetto</a>
+            </div>
+          </article>
         ))}
-      </ul>
+      </div>
+    </div>
+  </section>
 
-      <p class="other-work__archive" data-reveal>
-        Archive completo:{' '}
-        <a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer" class="hover-line">
-          behance.net/federicodeservi ↗
-        </a>
-      </p>
+  <section class="section section--other">
+    <div class="section__inner grid">
+      <div class="other">
+        <h2 class="t-h3" data-reveal>Other selected work</h2>
+        <ul class="other__grid" data-reveal-group>
+          {otherWork.map((w) => (
+            <li class="other__item" data-reveal-item>
+              <a href={w.href} target="_blank" rel="noopener noreferrer" class="other__link" data-cursor="link">
+                <span class="t-h3 other__title">{w.title}</span>
+                <span class="t-mono other__link-label">link Behance ↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <p class="other__archive" data-reveal>
+          Archive completo:{' '}
+          <a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer" class="link-inline" data-cursor="link">
+            behance.net/federicodeservi ↗
+          </a>
+        </p>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  .section { padding: 8rem 0; position: relative; }
+  .section--work-hero { padding: 16rem 0 4rem; }
+
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+  }
+
   .work-hero {
-    padding: 16rem 0 6rem;
-    min-height: 60svh;
-    display: flex;
-    align-items: center;
+    grid-column: 3 / -1;
   }
 
-  .work-hero__eyebrow { color: var(--text-secondary); margin-bottom: 2.4rem; }
+  .work-hero__eyebrow { color: var(--brand-blue); margin-bottom: 2.4rem; }
 
-  .work-hero__title {
-    font-family: var(--font-twk);
-    font-weight: 600;
-    line-height: 0.9em;
-    letter-spacing: -0.12rem;
-    text-transform: uppercase;
-    font-size: 4rem;
-    display: flex;
-    flex-direction: column;
+  .work-hero__bullets {
+    margin-top: 4rem;
+    color: var(--text-secondary);
+  }
+  .work-hero__bullets li {
+    font-size: 1.6rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255, 253, 226, 0.08);
   }
 
-  @media (min-width: 768px)  { .work-hero__title { font-size: 6.4rem; letter-spacing: -0.192rem; } }
-  @media (min-width: 1200px) { .work-hero__title { font-size: 11rem; letter-spacing: -0.33rem; } }
-
-  .work-hero__title-italic {
-    font-family: var(--font-ivory);
-    font-style: italic;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  /* List */
-  .work-list { padding: 6rem 0; }
+  .work-list { grid-column: 1 / -1; }
 
   .work-list__item {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2.4rem;
     padding: 6rem 0;
-    border-top: 1px solid rgba(255, 253, 226, 0.08);
+    border-top: 1px solid rgba(255, 253, 226, 0.12);
   }
 
   @media (min-width: 768px) {
     .work-list__item {
       grid-template-columns: 1fr 1fr;
-      gap: 6.4rem;
+      gap: 4.8rem;
       align-items: center;
     }
   }
 
-  .work-list__thumb-link { display: block; }
-  .work-list__media {
-    width: 100%;
-    transition: transform var(--d-base) var(--easeOutQuart),
-                filter var(--d-base) var(--easeOutQuart);
+  .work-list__num { color: var(--brand-blue); margin-bottom: 1.2rem; }
+  .work-list__title { margin-bottom: 1.2rem; }
+  .work-list__title a {
+    transition: color var(--d-micro) var(--easeOutQuart);
   }
-  .work-list__thumb-link:hover .work-list__media {
-    transform: scale(1.02);
-    filter: brightness(1.1);
-  }
+  .work-list__title a:hover { color: var(--brand-blue); }
+  .work-list__caption { color: var(--text-secondary); margin-bottom: 1.6rem; }
+  .work-list__result { margin-bottom: 2.4rem; max-width: 50ch; }
 
-  .work-list__num {
-    font-family: var(--font-herbik);
-    font-style: italic;
-    font-weight: 500;
-    font-size: 1.4rem;
-    color: var(--brand-blue);
-    margin-bottom: 1.6rem;
-  }
+  .other { grid-column: 3 / -1; }
+  .other > h2 { margin-bottom: 3.2rem; }
 
-  .work-list__title {
-    font-family: var(--font-twk);
-    font-weight: 600;
-    font-size: 3.2rem;
-    line-height: 1em;
-    letter-spacing: -0.096rem;
-    text-transform: uppercase;
-    margin-bottom: 1.6rem;
-  }
-
-  @media (min-width: 1200px) { .work-list__title { font-size: 4.8rem; letter-spacing: -0.144rem; } }
-
-  .work-list__caption {
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    margin-bottom: 1.6rem;
-  }
-
-  .work-list__result {
-    font-size: 1.8rem;
-    line-height: 1.4em;
-    margin-bottom: 2.4rem;
-  }
-
-  .work-list__cta {
-    font-family: var(--font-mono);
-    font-size: 1.3rem;
-    text-transform: uppercase;
-  }
-
-  /* Other work */
-  .other-work {
-    padding: 8rem 0 12rem;
-    border-top: 1px solid rgba(255, 253, 226, 0.08);
-  }
-
-  .other-work__heading {
-    margin-bottom: 4rem;
-    text-transform: uppercase;
-  }
-
-  .other-work__list {
+  .other__grid {
     display: grid;
     grid-template-columns: 1fr;
+    gap: 0;
+  }
+  @media (min-width: 768px) {
+    .other__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .other__item {
     border-top: 1px solid rgba(255, 253, 226, 0.12);
   }
-  @media (min-width: 768px) { .other-work__list { grid-template-columns: 1fr 1fr; } }
 
-  .other-work__item { border-bottom: 1px solid rgba(255, 253, 226, 0.12); }
-
-  .other-work__link {
+  .other__link {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -213,28 +171,21 @@ const otherWork = [
     padding: 2.4rem 0;
     transition: color var(--d-micro) var(--easeOutQuart);
   }
+  .other__link:hover { color: var(--brand-blue); }
 
-  .other-work__link:hover { color: var(--brand-blue); }
+  .other__link-label { color: var(--text-secondary); white-space: nowrap; }
 
-  .other-work__title {
-    font-family: var(--font-twk);
-    font-weight: 600;
-    font-size: 2rem;
-    text-transform: uppercase;
-  }
-
-  @media (min-width: 1200px) { .other-work__title { font-size: 2.4rem; } }
-
-  .other-work__label {
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
-    text-transform: uppercase;
+  .other__archive {
+    margin-top: 4.8rem;
+    padding-top: 2.4rem;
+    border-top: 1px solid rgba(255, 253, 226, 0.12);
     color: var(--text-secondary);
   }
 
-  .other-work__archive {
-    margin-top: 4rem;
-    color: var(--text-secondary);
-    font-size: 1.4rem;
+  .link-inline {
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.2rem;
   }
+  .link-inline:hover { color: var(--brand-blue); }
 </style>

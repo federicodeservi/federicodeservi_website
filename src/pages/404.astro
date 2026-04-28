@@ -4,73 +4,63 @@ import Reveals from '../components/Reveals.astro';
 import { u } from '../lib/url';
 ---
 
-<BaseLayout title="404 — Pagina non trovata" description="La pagina che cerchi non esiste, o è stata spostata." hideScrollIndicator>
+<BaseLayout title="404 — Pagina non trovata" description="La pagina che cerchi non esiste, o è stata spostata.">
   <Reveals />
 
-  <section class="not-found">
-    <div class="container">
-      <p class="not-found__eyebrow t-italic-sm" data-reveal>404</p>
-      <h1 class="not-found__title" data-reveal>
-        <span>Questa pagina</span>
-        <span class="not-found__title-italic">non esiste.</span>
-      </h1>
-      <p class="not-found__desc" data-reveal>
-        Probabilmente è stata spostata, oppure il link era già un po' sbagliato di partenza.
-      </p>
-      <p class="not-found__cta" data-reveal>
-        <a href={u('/')} class="btn">Torna alla home <span aria-hidden="true">→</span></a>
-      </p>
-      <p class="not-found__or t-italic-sm" data-reveal>
-        oppure:{' '}
-        <a href={u('/work')} class="hover-line">/work</a>
-        {' · '}
-        <a href={u('/about')} class="hover-line">/about</a>
-        {' · '}
-        <a href={u('/contact')} class="hover-line">/contact</a>
-      </p>
+  <section class="section section--404">
+    <div class="section__inner grid">
+      <div class="not-found">
+        <p class="t-mono not-found__eyebrow" data-reveal>404</p>
+        <h1 class="t-h1" data-reveal>Questa pagina<br /><span class="t-italic">non esiste.</span></h1>
+        <p class="t-body-lg" data-reveal>
+          Probabilmente è stata spostata, oppure il link era già un po' sbagliato di partenza.
+        </p>
+        <p class="not-found__cta" data-reveal>
+          <a href={u('/')} class="btn" data-cursor="link">Torna alla home <span aria-hidden="true">→</span></a>
+        </p>
+        <p class="not-found__or t-mono" data-reveal>
+          oppure:{' '}
+          <a href={u('/work')} class="link-inline" data-cursor="link">/work</a>
+          {' · '}
+          <a href={u('/about')} class="link-inline" data-cursor="link">/about</a>
+          {' · '}
+          <a href={u('/contact')} class="link-inline" data-cursor="link">/contact</a>
+        </p>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .not-found {
-    min-height: 80svh;
+  .section--404 {
+    min-height: 80vh;
     padding: 16rem 0 8rem;
     display: flex;
     align-items: center;
   }
 
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+  }
+
+  .not-found {
+    grid-column: 3 / -1;
+  }
+
   .not-found__eyebrow { color: var(--brand-blue); margin-bottom: 2.4rem; }
 
-  .not-found__title {
-    font-family: var(--font-twk);
-    font-weight: 600;
-    line-height: 0.9em;
-    letter-spacing: -0.12rem;
-    text-transform: uppercase;
-    font-size: 4rem;
-    margin-bottom: 3.2rem;
-    display: flex;
-    flex-direction: column;
-  }
-
-  @media (min-width: 768px)  { .not-found__title { font-size: 6.4rem; letter-spacing: -0.192rem; } }
-  @media (min-width: 1200px) { .not-found__title { font-size: 9.6rem; letter-spacing: -0.288rem; } }
-
-  .not-found__title-italic {
-    font-family: var(--font-ivory);
-    font-style: italic;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .not-found__desc {
-    font-size: 1.8rem;
-    margin-bottom: 4rem;
+  .not-found h1 { margin-bottom: 3.2rem; }
+  .not-found__cta { margin-top: 4rem; }
+  .not-found__or {
+    margin-top: 3.2rem;
     color: var(--text-secondary);
   }
 
-  .not-found__cta { margin-bottom: 3.2rem; }
-  .not-found__or { color: var(--text-secondary); }
+  .link-inline {
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+  }
+  .link-inline:hover { color: var(--brand-blue); }
 </style>

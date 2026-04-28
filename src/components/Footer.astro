@@ -4,297 +4,112 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <div class="footer__inner">
-    <div class="footer__top">
-      <div class="footer__top-left">
-        <p class="footer__slogan" data-reveal>
-          <span class="footer__slogan-line">designed</span>
-          <span class="footer__slogan-line"><span class="footer__slogan-italic">in milan</span>,</span>
-          <span class="footer__slogan-line">built</span>
-          <span class="footer__slogan-line"><span class="footer__slogan-italic">to last</span>.</span>
-        </p>
-
-        <div class="footer__contact">
-          <p class="footer__contact-label">Get in touch</p>
-          <a href="mailto:federico@federicodeservi.com" class="footer__contact-link hover-line">federico@federicodeservi.com</a>
-        </div>
-      </div>
-
-      <div class="footer__top-right">
-        <article class="footer__branch" data-reveal>
-          <div class="footer__clock" aria-hidden="true">
-            <span class="footer__clock-hand footer__clock-hand--hour"></span>
-            <span class="footer__clock-hand footer__clock-hand--minute"></span>
-          </div>
-          <div class="footer__branch-info">
-            <p class="footer__branch-country">Milano, IT</p>
-            <p class="footer__branch-address">Via dei Pellegrini · Milano</p>
-            <p class="footer__branch-phone">Available remote</p>
-          </div>
-        </article>
-
-        <article class="footer__socials" data-reveal>
-          <p class="footer__socials-title">Elsewhere</p>
-          <ul class="footer__socials-list">
-            <li><a href="https://www.linkedin.com/in/federicodeservi" target="_blank" rel="noopener noreferrer" class="hover-line">LinkedIn</a></li>
-            <li><a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer" class="hover-line">Behance</a></li>
-            <li><a href="https://www.instagram.com/federicodeservi" target="_blank" rel="noopener noreferrer" class="hover-line">Instagram</a></li>
-          </ul>
-        </article>
-      </div>
+  <div class="footer__top">
+    <div class="footer__col footer__col--name">
+      <p class="footer__name">Federico de Servi</p>
+      <p class="footer__role">Designer + brand-builder + flutter-dev</p>
+      <p class="footer__role">Milano, IT — works remote</p>
     </div>
 
-    <div class="footer__bottom">
-      <div class="footer__bottom-left">
-        <ul class="footer__nav">
-          <li><a href={u('/work')} class="hover-line">Work</a></li>
-          <li><a href={u('/about')} class="hover-line">About</a></li>
-          <li><a href={u('/contact')} class="hover-line">Contact</a></li>
-        </ul>
-      </div>
-      <div class="footer__bottom-right">
-        <p class="footer__copyright">© {currentYear} Federico de Servi · Built with Astro</p>
-      </div>
+    <div class="footer__col">
+      <h4>Sitemap</h4>
+      <a href={u('/work')}>Work</a>
+      <a href={u('/about')}>About</a>
+      <a href={u('/contact')}>Contact</a>
     </div>
+
+    <div class="footer__col">
+      <h4>Elsewhere</h4>
+      <a href="https://www.linkedin.com/in/federicodeservi" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+      <a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer">Behance ↗</a>
+      <a href="https://www.instagram.com/federicodeservi" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
+    </div>
+
+    <div class="footer__col">
+      <h4>Email</h4>
+      <a href="mailto:federico@federicodeservi.com">federico@<br />federicodeservi.com</a>
+    </div>
+  </div>
+
+  <div class="footer__bot">
+    <span>© {currentYear} — Made in Milano</span>
+    <span>Switzer + Inter + JetBrains Mono</span>
+    <span>Built with Astro</span>
   </div>
 </footer>
 
 <style>
   .footer {
-    position: relative;
-    min-height: 100svh;
-    width: 100%;
-    padding: 15.2rem var(--padding-x) 1.6rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    background:
-      radial-gradient(ellipse at center bottom, rgba(23, 64, 169, 0.18), transparent 70%),
-      var(--brand-dark-blue);
+    padding: 6.4rem var(--pad) 4rem;
+    border-top: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
   }
 
-  @media (min-width: 768px) {
-    .footer { padding: 15.4rem var(--padding-x) 3.2rem; }
-  }
-
-  @media (min-width: 1200px) {
-    .footer { padding: 4.8rem var(--padding-x); }
-  }
-
-  .footer__inner {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: 9rem;
-  }
-
-  @media (min-width: 1200px) { .footer__inner { gap: 17.8rem; } }
-
-  /* === Top === */
   .footer__top {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 8rem;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 6.4rem;
+    margin-bottom: 6.4rem;
   }
 
-  @media (min-width: 1200px) {
+  .footer__col h4 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 1.4rem;
+    font-weight: 400;
+  }
+
+  .footer__col--name .footer__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: -0.012em;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+  }
+
+  .footer__col--name .footer__role {
+    color: var(--ink-muted);
+    font-size: 1.4rem;
+    line-height: 1.5;
+  }
+
+  .footer__col a {
+    display: block;
+    color: var(--ink);
+    padding: 0.3rem 0;
+    font-size: 1.3rem;
+    transition: color 200ms, transform 200ms;
+  }
+
+  .footer__col a:hover {
+    color: var(--accent-warm);
+    transform: translateX(4px);
+  }
+
+  .footer__bot {
+    padding-top: 2.4rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 900px) {
     .footer__top {
-      grid-template-columns: 7fr 5fr;
-      gap: var(--gap-x);
+      grid-template-columns: 1fr;
+      gap: 4rem;
+      margin-bottom: 4rem;
     }
   }
-
-  .footer__top-left { display: flex; flex-direction: column; gap: 4rem; }
-  @media (min-width: 1200px) { .footer__top-left { padding-top: 29.8rem; gap: 4.8rem; } }
-
-  .footer__slogan {
-    font-family: var(--font-twk);
-    font-weight: 600;
-    font-size: 4.8rem;
-    line-height: 0.85em;
-    letter-spacing: -0.144rem;
-    text-transform: uppercase;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  @media (min-width: 768px)  { .footer__slogan { font-size: 6.4rem; letter-spacing: -0.192rem; } }
-  @media (min-width: 1200px) { .footer__slogan { font-size: 12rem; letter-spacing: -0.36rem; } }
-
-  .footer__slogan-italic {
-    font-family: var(--font-ivory);
-    font-style: italic;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .footer__contact-label {
-    font-family: var(--font-herbik);
-    font-style: italic;
-    font-weight: 500;
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.8rem;
-  }
-
-  .footer__contact-link {
-    font-family: var(--font-twk);
-    font-weight: 400;
-    font-size: 1.8rem;
-    line-height: 1.4em;
-    letter-spacing: -0.018rem;
-  }
-
-  @media (min-width: 768px) {
-    .footer__contact-link { font-size: 2.4rem; }
-  }
-
-  /* === Top right (branch + socials) === */
-  .footer__top-right {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3.9rem var(--gap-x);
-  }
-
-  .footer__branch { display: flex; flex-direction: column; gap: 1.6rem; }
-  @media (min-width: 1200px) { .footer__branch { gap: 2.8rem; } }
-
-  .footer__clock {
-    position: relative;
-    flex-shrink: 0;
-    width: 3.2rem;
-    height: 3.2rem;
-    border-radius: 50%;
-    border: 0.1rem solid var(--brand-yellow);
-  }
-
-  @media (min-width: 1200px) { .footer__clock { width: 4rem; height: 4rem; } }
-
-  .footer__clock-hand {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    width: 0.1rem;
-    background-color: currentColor;
-    transform-origin: bottom center;
-    transition: transform 0.3s cubic-bezier(0.4, 2.08, 0.55, 0.44);
-  }
-
-  .footer__clock-hand--hour { height: 0.72rem; }
-  .footer__clock-hand--minute { height: 1.04rem; }
-  @media (min-width: 1200px) {
-    .footer__clock-hand--hour { height: 0.9rem; }
-    .footer__clock-hand--minute { height: 1.3rem; }
-  }
-
-  .footer__branch-info { display: flex; flex-direction: column; gap: 1.2rem; }
-  @media (min-width: 1200px) { .footer__branch-info { gap: 1.6rem; } }
-
-  .footer__branch-country {
-    font-family: var(--font-twk);
-    font-weight: 600;
-    font-size: 1.8rem;
-    line-height: 1em;
-    letter-spacing: -0.054rem;
-  }
-  @media (min-width: 768px) { .footer__branch-country { font-size: 2.4rem; letter-spacing: -0.072rem; } }
-  @media (min-width: 1200px) { .footer__branch-country { font-size: 3.2rem; letter-spacing: -0.096rem; line-height: 1.4em; } }
-
-  .footer__branch-address,
-  .footer__branch-phone {
-    font-family: var(--font-twk);
-    font-weight: 400;
-    font-size: 1.4rem;
-    line-height: 1.4em;
-    letter-spacing: -0.028rem;
-    color: var(--text-secondary);
-  }
-
-  @media (min-width: 1200px) {
-    .footer__branch-address,
-    .footer__branch-phone { font-size: 1.8rem; letter-spacing: -0.036rem; }
-  }
-
-  .footer__socials { display: flex; flex-direction: column; gap: 1.6rem; }
-  @media (min-width: 1200px) { .footer__socials { gap: 1.8rem; } }
-
-  .footer__socials-title {
-    font-family: var(--font-twk);
-    font-weight: 400;
-    font-size: 1.4rem;
-    color: var(--text-secondary);
-    line-height: 1.4em;
-  }
-  @media (min-width: 1200px) { .footer__socials-title { font-size: 1.8rem; } }
-
-  .footer__socials-list {
-    display: flex;
-    flex-direction: column;
-    font-family: var(--font-twk);
-    font-weight: 600;
-    font-size: 1.8rem;
-    line-height: 1em;
-    letter-spacing: -0.054rem;
-  }
-
-  @media (min-width: 768px)  { .footer__socials-list { font-size: 2.4rem; letter-spacing: -0.072rem; } }
-  @media (min-width: 1200px) { .footer__socials-list { font-size: 3.2rem; letter-spacing: -0.096rem; line-height: 1.1em; } }
-
-  .footer__socials-list li { width: max-content; }
-
-  /* === Bottom === */
-  .footer__bottom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.6rem;
-    padding-top: 4rem;
-    border-top: 1px solid rgba(255, 253, 226, 0.12);
-  }
-
-  .footer__nav {
-    display: flex;
-    gap: 2.4rem;
-    font-family: var(--font-twk);
-    font-size: 1.4rem;
-    text-transform: lowercase;
-  }
-
-  .footer__copyright {
-    font-family: var(--font-twk);
-    font-weight: 400;
-    font-size: 1.2rem;
-    line-height: 1.4em;
-    color: var(--text-secondary);
-    text-align: right;
-  }
-
-  @media (min-width: 1200px) { .footer__copyright { font-size: 1.4rem; } }
 </style>
-
-<script>
-  // Live clock — Milan time
-  const setup = () => {
-    const hourEl = document.querySelector<HTMLElement>('.footer__clock-hand--hour');
-    const minEl = document.querySelector<HTMLElement>('.footer__clock-hand--minute');
-    if (!hourEl || !minEl) return;
-
-    const tick = () => {
-      const now = new Date();
-      const ms = now.getMinutes() * 60_000 + now.getSeconds() * 1000;
-      const hours = (now.getHours() % 12) + ms / 3_600_000;
-      const minutes = now.getMinutes() + now.getSeconds() / 60;
-      hourEl.style.transform = `rotate(${hours * 30}deg)`;
-      minEl.style.transform = `rotate(${minutes * 6}deg)`;
-    };
-
-    tick();
-    setInterval(tick, 1000);
-  };
-
-  setup();
-  document.addEventListener('astro:after-swap', setup);
-</script>

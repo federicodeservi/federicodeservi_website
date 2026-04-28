@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionNumber from '../components/SectionNumber.astro';
 import Reveals from '../components/Reveals.astro';
 import { u } from '../lib/url';
 
@@ -13,294 +14,227 @@ const jsonLd = {
   description: 'Designer, brand-builder e flutter-dev a Milano. Lavoro con content creator italiani.',
   url: 'https://federicodeservi.github.io/federicodeservi_website/about',
   knowsAbout: ['Design', 'Branding', 'Flutter', 'Editorial Design'],
-  address: { '@type': 'PostalAddress', addressLocality: 'Milano', addressCountry: 'IT' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Milano',
+    addressCountry: 'IT',
+  },
 };
 ---
 
 <BaseLayout
   title="About"
-  description="Federico de Servi, 1995, Milano. Designer e flutter-dev per content creator italiani."
+  description="Federico de Servi, 1995, Milano. Designer e flutter-dev per content creator italiani. Come lavoro, con cosa, e cosa faccio fuori dal lavoro."
   jsonLd={jsonLd}
-  hideScrollIndicator
 >
   <Reveals />
 
-  <section class="about-hero">
-    <div class="container">
-      <p class="t-italic-sm about-hero__eyebrow" data-reveal>About</p>
-      <h1 class="about-hero__title t-h1" data-reveal>
-        <span>Federico,</span>
-        <span class="about-hero__title-italic">1995, Milano.</span>
-      </h1>
+  <section class="section section--about-hero">
+    <div class="section__inner grid">
+      <div class="about-hero">
+        <p class="t-mono about-hero__eyebrow" data-reveal>ABOUT</p>
+        <h1 class="t-h1" data-reveal>Federico,<br /><span class="t-italic">1995, Milano.</span></h1>
+      </div>
     </div>
   </section>
 
-  <section class="about-bio">
-    <div class="container">
-      <p class="t-italic-sm about-bio__eyebrow" data-reveal><em>01 — Bio</em></p>
-      <div class="about-bio__body">
-        <p data-reveal>
+  <!-- 01 — Bio -->
+  <section class="section">
+    <div class="section__inner grid">
+      <SectionNumber number="01" label="Bio" />
+      <div class="about-block">
+        <h2 class="t-h2" data-reveal>Bio.</h2>
+        <p class="t-body-lg" data-reveal>
           Faccio design, brand e (quando serve) sviluppo, da Milano, principalmente in remoto. Ho una formazione tra design e tecnologia che mi permette di stare al tavolo del progetto dall'inizio alla fine.
         </p>
-        <p data-reveal>
+        <p class="t-body-lg" data-reveal>
           Ho iniziato facendo siti per amici, poi per amici di amici. Ho lavorato su prodotti digitali, libri, identità — sempre con persone che hanno qualcosa da dire e bisogno di un supporto serio per dirla bene.
         </p>
-        <p data-reveal>
+        <p class="t-body-lg" data-reveal>
           Lavoro meglio con creator italiani che hanno già una voce e vogliono trasformarla in un prodotto: un sito che si distingua, un'app che faccia esattamente una cosa, un libro che la gente apra davvero.
         </p>
-        <p data-reveal>
+        <p class="t-body-lg" data-reveal>
           Niente jargon, niente promesse di "scalare al next level". Faccio le cose come si farebbero per un amico che ti ha chiesto un favore — solo che adesso ti pago.
         </p>
       </div>
     </div>
   </section>
 
-  <section class="about-process">
-    <div class="container">
-      <p class="t-italic-sm about-process__eyebrow" data-reveal><em>02 — Process</em></p>
-      <h2 class="about-process__heading t-h2" data-reveal>
-        Come <em class="ff-italic">lavoro</em>.
-      </h2>
+  <!-- 02 — Process -->
+  <section class="section">
+    <div class="section__inner grid">
+      <SectionNumber number="02" label="Process" />
+      <div class="about-block">
+        <h2 class="t-h2" data-reveal>Process.</h2>
+        <p class="t-body-lg" data-reveal>Come lavoro su un progetto, da intro call a delivery.</p>
 
-      <ol class="about-process__list" data-reveal-stagger>
-        <li class="about-process__item" data-reveal-item>
-          <p class="about-process__num">02.1 — Discovery</p>
-          <p class="about-process__text">Una call. Capire il problema reale, non quello che è arrivato in mail.</p>
-        </li>
-        <li class="about-process__item" data-reveal-item>
-          <p class="about-process__num">02.2 — Direction</p>
-          <p class="about-process__text">Un documento di direzione, due o tre opzioni. Si sceglie prima di costruire.</p>
-        </li>
-        <li class="about-process__item" data-reveal-item>
-          <p class="about-process__num">02.3 — Build</p>
-          <p class="about-process__text">Iterazioni asincrone. No surprises, niente "tadà" finale.</p>
-        </li>
-        <li class="about-process__item" data-reveal-item>
-          <p class="about-process__num">02.4 — Handoff</p>
-          <p class="about-process__text">Consegna + 30 giorni di supporto, per le cose che spuntano una volta che il progetto è vivo.</p>
-        </li>
-      </ol>
+        <ol class="process" data-reveal-group>
+          <li class="process__item" data-reveal-item>
+            <p class="t-mono process__num">02.1 — Discovery</p>
+            <p class="t-body">Una call. Capire il problema reale, non quello che è arrivato in mail.</p>
+          </li>
+          <li class="process__item" data-reveal-item>
+            <p class="t-mono process__num">02.2 — Direction</p>
+            <p class="t-body">Un documento di direzione, due o tre opzioni. Si sceglie prima di costruire.</p>
+          </li>
+          <li class="process__item" data-reveal-item>
+            <p class="t-mono process__num">02.3 — Build</p>
+            <p class="t-body">Iterazioni asincrone. No surprises, niente "tadà" finale.</p>
+          </li>
+          <li class="process__item" data-reveal-item>
+            <p class="t-mono process__num">02.4 — Handoff</p>
+            <p class="t-body">Consegna + 30 giorni di supporto, per le cose che spuntano una volta che il progetto è vivo.</p>
+          </li>
+        </ol>
+      </div>
     </div>
   </section>
 
-  <section class="about-tools">
-    <div class="container">
-      <p class="t-italic-sm about-tools__eyebrow" data-reveal><em>03 — Tools</em></p>
-      <h2 class="about-tools__heading t-h2" data-reveal>
-        Quelli che <em class="ff-italic">uso davvero</em>.
-      </h2>
+  <!-- 03 — Tools -->
+  <section class="section">
+    <div class="section__inner grid">
+      <SectionNumber number="03" label="Tools" />
+      <div class="about-block">
+        <h2 class="t-h2" data-reveal>Tools.</h2>
+        <p class="t-body-lg" data-reveal>Quelli che uso davvero, niente "stack flex".</p>
 
-      <ul class="about-tools__list" data-reveal-stagger>
-        {tools.map((t) => (
-          <li class="about-tools__item" data-reveal-item>{t}</li>
-        ))}
-      </ul>
+        <ul class="tools" data-reveal-group>
+          {tools.map((t) => (
+            <li class="tools__item" data-reveal-item>
+              <span class="t-h3">{t}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 
-  <section class="about-off">
-    <div class="container">
-      <p class="t-italic-sm about-off__eyebrow" data-reveal><em>04 — Off-hours</em></p>
-      <p class="about-off__text" data-reveal>
-        Quando non lavoro, ascolto podcast italiani (sì, anche Power Pizza), provo a cucinare meglio di quanto sappia, e cerco scuse per andare a vedere mostre di design tipografico. A Milano, si trovano.
-      </p>
+  <!-- 04 — Off-hours -->
+  <section class="section">
+    <div class="section__inner grid">
+      <SectionNumber number="04" label="Off-hours" />
+      <div class="about-block">
+        <h2 class="t-h2" data-reveal>Off-hours.</h2>
+
+        <div class="off-hours" data-reveal>
+          <div class="off-hours__photo">
+            <span>foto hobby · placeholder</span>
+          </div>
+          <p class="t-body-lg">
+            Quando non lavoro, ascolto podcast italiani (sì, anche Power Pizza), provo a cucinare meglio di quanto sappia, e cerco scuse per andare a vedere mostre di design tipografico. A Milano, si trovano.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="contact-cta">
-    <div class="contact-cta__container container">
-      <p class="contact-cta__index t-italic-sm" data-reveal>05 — <em>Get in touch</em></p>
-      <h2 class="contact-cta__title" data-reveal>
-        <span>Hai un progetto</span>
-        <span class="contact-cta__title-italic">in mente?</span>
-      </h2>
-      <p class="contact-cta__cta" data-reveal>
-        <a href={u('/contact')} class="btn">Scrivimi <span aria-hidden="true">→</span></a>
-      </p>
+  <!-- 05 — Get in touch -->
+  <section class="section section--invert">
+    <div class="section__inner grid">
+      <SectionNumber number="05" label="Get in touch" />
+      <div class="about-block">
+        <h2 class="t-h2" data-reveal>Get in touch.</h2>
+        <p class="t-body-lg" data-reveal>Hai un progetto in mente? Parliamone.</p>
+        <p class="about-block__cta" data-reveal>
+          <a href={u('/contact')} class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
+        </p>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .ff-italic {
-    font-family: var(--font-ivory);
-    font-style: italic;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
+  .section { padding: 8rem 0; position: relative; }
+  .section--about-hero { padding: 16rem 0 4rem; min-height: 60vh; display: flex; align-items: center; }
+
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
   }
 
-  .about-hero {
-    padding: 16rem 0 8rem;
-    min-height: 60svh;
-    display: flex;
-    align-items: center;
-  }
+  .about-hero { grid-column: 3 / -1; }
+  .about-hero__eyebrow { color: var(--brand-blue); margin-bottom: 2.4rem; }
 
-  .about-hero__eyebrow { color: var(--text-secondary); margin-bottom: 2.4rem; }
-  .about-hero__title {
-    display: flex;
-    flex-direction: column;
-  }
-  .about-hero__title-italic {
-    font-family: var(--font-ivory);
-    font-style: italic;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-  }
+  .about-block { grid-column: 3 / -1; }
+  @media (min-width: 1200px) { .about-block { grid-column: 5 / span 9; } }
 
-  /* Sections */
-  .about-bio,
-  .about-process,
-  .about-tools,
-  .about-off {
-    padding: 6rem 0;
-    border-top: 1px solid rgba(255, 253, 226, 0.08);
-  }
+  .about-block > h2 { margin-bottom: 4rem; }
+  .about-block > p + p { margin-top: 1.6rem; }
+  .about-block__cta { margin-top: 3.2rem; }
 
-  @media (min-width: 1200px) {
-    .about-bio,
-    .about-process,
-    .about-tools,
-    .about-off { padding: 12rem 0; }
-  }
-
-  .about-bio__eyebrow,
-  .about-process__eyebrow,
-  .about-tools__eyebrow,
-  .about-off__eyebrow {
-    color: var(--text-secondary);
-    margin-bottom: 4rem;
-  }
-
-  .about-bio__body {
-    max-width: 72rem;
-    font-size: 1.8rem;
-    line-height: 1.4em;
-    letter-spacing: -0.018rem;
-  }
-
-  @media (min-width: 1200px) { .about-bio__body { font-size: 2.4rem; line-height: 1.4em; } }
-
-  .about-bio__body p + p { margin-top: 2rem; }
-
-  .about-process__heading,
-  .about-tools__heading {
-    margin-bottom: 6rem;
-    text-transform: uppercase;
-  }
-
-  .about-process__list {
+  /* Process */
+  .process {
+    margin-top: 4rem;
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-    border-top: 1px solid rgba(255, 253, 226, 0.18);
+    gap: 2.4rem;
+    counter-reset: process;
   }
 
-  .about-process__item {
+  .process__item {
+    border-top: 1px solid rgba(255, 253, 226, 0.18);
+    padding-top: 1.6rem;
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.8rem;
-    padding: 2.4rem 0;
-    border-bottom: 1px solid rgba(255, 253, 226, 0.12);
   }
 
   @media (min-width: 768px) {
-    .about-process__item {
-      grid-template-columns: 28rem 1fr;
-      gap: 4rem;
-      align-items: baseline;
+    .process__item {
+      grid-template-columns: 24rem 1fr;
+      gap: 3.2rem;
     }
   }
 
-  .about-process__num {
-    font-family: var(--font-mono);
-    font-size: 1.4rem;
-    text-transform: uppercase;
+  .process__num {
     color: var(--brand-blue);
-    letter-spacing: -0.028rem;
   }
 
-  .about-process__text {
-    font-size: 1.8rem;
-    line-height: 1.4em;
-  }
-
-  .about-tools__list {
+  /* Tools */
+  .tools {
+    margin-top: 4rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
   }
-  @media (min-width: 768px) { .about-tools__list { grid-template-columns: repeat(4, 1fr); } }
 
-  .about-tools__item {
-    border: 1px solid rgba(255, 253, 226, 0.18);
-    padding: 4rem 2rem;
-    font-family: var(--font-twk);
-    font-weight: 600;
-    font-size: 2rem;
-    text-transform: uppercase;
-    text-align: center;
-    transition: background-color var(--d-micro) var(--easeOutQuart);
+  @media (min-width: 768px) {
+    .tools { grid-template-columns: repeat(4, 1fr); }
   }
 
-  @media (min-width: 1200px) { .about-tools__item { font-size: 2.4rem; } }
+  .tools__item {
+    border: 1px solid rgba(255, 253, 226, 0.18);
+    padding: 3.2rem 2rem;
+    display: grid;
+    place-items: center;
+    transition: background-color var(--d-hover) var(--easeOutQuart);
+  }
 
-  .about-tools__item:hover {
+  .tools__item:hover {
     background: rgba(255, 253, 226, 0.04);
   }
 
-  .about-off__text {
-    max-width: 64rem;
-    font-size: 2rem;
-    line-height: 1.4em;
-  }
-  @media (min-width: 1200px) { .about-off__text { font-size: 2.8rem; line-height: 1.3em; } }
-
-  /* Contact CTA */
-  .contact-cta {
-    padding: 12rem 0;
-    text-align: center;
-    background: var(--brand-yellow);
-    color: var(--brand-dark-blue);
-    min-height: 60svh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Off-hours */
+  .off-hours {
+    display: grid;
+    gap: 3.2rem;
+    grid-template-columns: 1fr;
+    margin-top: 2.4rem;
   }
 
-  .contact-cta__container { max-width: 100rem; }
-  .contact-cta__index {
-    color: rgba(5, 18, 54, 0.6);
-    margin-bottom: 3.2rem;
+  @media (min-width: 768px) {
+    .off-hours { grid-template-columns: 1fr 1fr; gap: 4.8rem; align-items: center; }
   }
-  .contact-cta__index em { color: var(--brand-dark-blue); }
 
-  .contact-cta__title {
-    font-family: var(--font-twk);
-    font-weight: 600;
-    line-height: 0.9em;
-    letter-spacing: -0.12rem;
+  .off-hours__photo {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, var(--brand-blue), var(--brand-dark-blue));
+    border-radius: var(--r-sm);
+    display: grid;
+    place-items: center;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
     text-transform: uppercase;
-    font-size: 4rem;
-    margin-bottom: 4rem;
-    display: flex;
-    flex-direction: column;
-  }
-  @media (min-width: 768px)  { .contact-cta__title { font-size: 6.4rem; letter-spacing: -0.192rem; } }
-  @media (min-width: 1200px) { .contact-cta__title { font-size: 9.6rem; letter-spacing: -0.288rem; } }
-
-  .contact-cta__title-italic {
-    font-family: var(--font-ivory);
-    font-style: italic;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .contact-cta .btn {
-    background: var(--brand-dark-blue);
-    color: var(--brand-yellow);
   }
 </style>
