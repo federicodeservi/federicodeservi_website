@@ -1,0 +1,163 @@
+---
+// Hero with full-bleed background media (placeholder gradient + noise),
+// small centered title block with morphing words, italic year, language toggle.
+import WordsMorph from './WordsMorph.astro';
+
+const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan dei podcast italiani'];
+---
+
+<section class="hero" data-section data-section-name="Hero">
+  <!-- Full-bleed background -->
+  <div class="hero__media" aria-hidden="true">
+    <div class="hero__media-layer hero__media-layer--gradient"></div>
+    <div class="hero__media-layer hero__media-layer--noise"></div>
+    <div class="hero__media-layer hero__media-layer--vignette"></div>
+  </div>
+
+  <!-- Foreground content -->
+  <div class="hero__content">
+    <div class="hero__top-row">
+      <span class="hero__lang" data-reveal>IT</span>
+      <span class="hero__lang-sep" aria-hidden="true">/</span>
+      <span class="hero__lang hero__lang--secondary" data-reveal>EN</span>
+    </div>
+
+    <h1 class="hero__title" data-reveal>
+      <span class="hero__title-line">Sono un</span>
+      <span class="hero__title-line hero__title-line--morph">
+        <WordsMorph words={heroWords} italicIdx={[3, 4]} />
+      </span>
+      <span class="hero__title-line">per content creator</span>
+      <span class="hero__title-line"><span class="hero__title-italic">italiani</span>.</span>
+    </h1>
+
+    <span class="hero__year" data-reveal>2026 — Milano</span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    z-index: 0;
+    height: 100svh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Background media — placeholder gradient + noise */
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .hero__media-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__media-layer--gradient {
+    background:
+      radial-gradient(circle at 20% 80%, rgba(23, 64, 169, 0.55) 0%, transparent 55%),
+      radial-gradient(circle at 80% 20%, rgba(255, 253, 226, 0.08) 0%, transparent 50%),
+      linear-gradient(135deg, var(--brand-dark-blue) 0%, #0a1a4d 50%, var(--brand-dark-blue) 100%);
+    animation: hero-gradient-shift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes hero-gradient-shift {
+    from { transform: scale(1) translate(0, 0); }
+    to   { transform: scale(1.08) translate(-2%, -1%); }
+  }
+
+  .hero__media-layer--noise {
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/></svg>");
+    background-size: 220px 220px;
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+  }
+
+  .hero__media-layer--vignette {
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(5, 18, 54, 0.5) 100%);
+  }
+
+  /* Foreground content */
+  .hero__content {
+    position: relative;
+    width: 34.5rem;
+    max-width: calc(100vw - var(--padding-x) * 2);
+  }
+
+  @media (min-width: 768px)  { .hero__content { width: 58.4rem; } }
+  @media (min-width: 1200px) { .hero__content { width: 100rem; } }
+
+  .hero__top-row {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-herbik);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+
+  @media (min-width: 1200px) { .hero__top-row { font-size: 1.4rem; } }
+
+  .hero__lang { line-height: 0.9em; }
+  .hero__lang--secondary { color: var(--text-secondary); }
+
+  .hero__lang-sep {
+    width: 0.1rem;
+    height: 1.2rem;
+    background-color: var(--brand-yellow);
+    opacity: 0.5;
+    align-self: center;
+  }
+
+  .hero__title {
+    font-family: var(--font-twk);
+    font-weight: 600;
+    line-height: 0.9em;
+    letter-spacing: -0.12rem;
+    text-transform: uppercase;
+    font-size: 4rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px)  { .hero__title { font-size: 6.4rem; letter-spacing: -0.192rem; } }
+  @media (min-width: 1200px) { .hero__title { font-size: 9.6rem; letter-spacing: -0.288rem; } }
+
+  .hero__title-line { display: block; }
+  .hero__title-line--morph { color: var(--brand-blue); }
+
+  .hero__title-italic {
+    font-family: var(--font-ivory);
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .hero__year {
+    position: absolute;
+    bottom: 0.26rem;
+    left: 0;
+    font-family: var(--font-herbik);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 0.9em;
+    letter-spacing: 0;
+    color: var(--text-secondary);
+  }
+
+  @media (min-width: 1200px) { .hero__year { font-size: 1.4rem; } }
+</style>

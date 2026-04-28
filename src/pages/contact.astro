@@ -6,98 +6,116 @@ import Reveals from '../components/Reveals.astro';
 <BaseLayout
   title="Contact"
   description="Hai un progetto in mente? Parliamone. Scrivi a federico@federicodeservi.com — tempo di risposta 2-3 giorni lavorativi."
+  hideScrollIndicator
 >
   <Reveals />
 
-  <section class="section section--contact-hero">
-    <div class="section__inner grid">
-      <div class="contact-hero">
-        <p class="t-mono contact-hero__eyebrow" data-reveal>CONTACT</p>
-        <h1 class="t-h1" data-reveal>Hai un progetto<br />in mente?<br /><span class="t-italic">Parliamone.</span></h1>
-      </div>
+  <section class="contact-hero">
+    <div class="container">
+      <p class="contact-hero__eyebrow t-italic-sm" data-reveal>Contact</p>
+      <h1 class="contact-hero__title" data-reveal>
+        <span>Hai un progetto</span>
+        <span>in mente?</span>
+        <span class="contact-hero__title-italic">Parliamone.</span>
+      </h1>
     </div>
   </section>
 
-  <section class="section">
-    <div class="section__inner grid">
-      <div class="contact-block">
-        <form class="contact-form" id="contactForm" data-reveal-group>
-          <div class="contact-form__row" data-reveal-item>
-            <label for="name" class="t-mono contact-form__label">01 — Come ti chiami?</label>
-            <input id="name" name="name" type="text" required autocomplete="name" />
-          </div>
-          <div class="contact-form__row" data-reveal-item>
-            <label for="email" class="t-mono contact-form__label">02 — La tua email</label>
-            <input id="email" name="email" type="email" required autocomplete="email" />
-          </div>
-          <div class="contact-form__row" data-reveal-item>
-            <label for="topic" class="t-mono contact-form__label">03 — Di cosa si tratta?</label>
-            <select id="topic" name="topic" required>
-              <option value="" disabled selected>Scegli</option>
-              <option value="Sito">Sito</option>
-              <option value="App">App</option>
-              <option value="Brand">Brand</option>
-              <option value="Libro">Libro</option>
-              <option value="Altro">Altro</option>
-            </select>
-          </div>
-          <div class="contact-form__row" data-reveal-item>
-            <label for="message" class="t-mono contact-form__label">04 — Raccontami</label>
-            <textarea id="message" name="message" rows="4" required></textarea>
-          </div>
-          <div class="contact-form__row contact-form__row--cta" data-reveal-item>
-            <button type="submit" class="btn" data-cursor="link">Manda <span aria-hidden="true">→</span></button>
-          </div>
-        </form>
-      </div>
+  <section class="contact-form-section">
+    <div class="container">
+      <form class="contact-form" id="contactForm" data-reveal-stagger>
+        <div class="contact-form__row" data-reveal-item>
+          <label for="name" class="contact-form__label">01 — Come ti chiami?</label>
+          <input id="name" name="name" type="text" required autocomplete="name" />
+        </div>
+        <div class="contact-form__row" data-reveal-item>
+          <label for="email" class="contact-form__label">02 — La tua email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" />
+        </div>
+        <div class="contact-form__row" data-reveal-item>
+          <label for="topic" class="contact-form__label">03 — Di cosa si tratta?</label>
+          <select id="topic" name="topic" required>
+            <option value="" disabled selected>Scegli</option>
+            <option value="Sito">Sito</option>
+            <option value="App">App</option>
+            <option value="Brand">Brand</option>
+            <option value="Libro">Libro</option>
+            <option value="Altro">Altro</option>
+          </select>
+        </div>
+        <div class="contact-form__row" data-reveal-item>
+          <label for="message" class="contact-form__label">04 — Raccontami</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <div class="contact-form__row contact-form__row--cta" data-reveal-item>
+          <button type="submit" class="btn">Manda <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
     </div>
   </section>
 
-  <section class="section section--contact-direct">
-    <div class="section__inner grid">
-      <div class="contact-block">
-        <p class="t-mono contact-direct__eyebrow" data-reveal>Oppure scrivi direttamente</p>
-        <p data-reveal>
-          <a href="mailto:federico@federicodeservi.com" class="contact-direct__email t-h3" data-cursor="link">
-            federico@federicodeservi.com ↗
-          </a>
-        </p>
-        <p class="contact-direct__note t-mono" data-reveal>
-          Tempo di risposta tipico: 2-3 giorni lavorativi.
-        </p>
-      </div>
+  <section class="contact-direct">
+    <div class="container">
+      <p class="contact-direct__eyebrow t-italic-sm" data-reveal>Oppure scrivi direttamente</p>
+      <a href="mailto:federico@federicodeservi.com" class="contact-direct__email hover-line" data-reveal>
+        federico@federicodeservi.com ↗
+      </a>
+      <p class="contact-direct__note" data-reveal>
+        Tempo di risposta tipico: 2-3 giorni lavorativi.
+      </p>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .section { padding: 8rem 0; position: relative; }
-  .section--contact-hero { padding: 16rem 0 4rem; min-height: 60vh; display: flex; align-items: center; }
-  .section--contact-direct { padding-bottom: 12rem; }
-
-  .section__inner {
-    width: 100%;
-    padding-left: var(--padding-x);
-    padding-right: var(--padding-x);
+  .contact-hero {
+    padding: 16rem 0 8rem;
+    min-height: 60svh;
+    display: flex;
+    align-items: center;
   }
 
-  .contact-hero { grid-column: 3 / -1; }
-  .contact-hero__eyebrow { color: var(--brand-blue); margin-bottom: 2.4rem; }
+  .contact-hero__eyebrow { color: var(--text-secondary); margin-bottom: 2.4rem; }
 
-  .contact-block { grid-column: 3 / -1; }
-  @media (min-width: 1200px) { .contact-block { grid-column: 5 / span 9; } }
+  .contact-hero__title {
+    font-family: var(--font-twk);
+    font-weight: 600;
+    line-height: 0.9em;
+    letter-spacing: -0.12rem;
+    text-transform: uppercase;
+    font-size: 4rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px)  { .contact-hero__title { font-size: 6.4rem; letter-spacing: -0.192rem; } }
+  @media (min-width: 1200px) { .contact-hero__title { font-size: 11rem; letter-spacing: -0.33rem; } }
+
+  .contact-hero__title-italic {
+    font-family: var(--font-ivory);
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .contact-form-section {
+    padding: 6rem 0 12rem;
+  }
 
   .contact-form {
     display: grid;
-    gap: 3.2rem;
+    gap: 4rem;
+    max-width: 72rem;
   }
 
-  .contact-form__row {
-    display: grid;
-    gap: 1rem;
-  }
+  .contact-form__row { display: grid; gap: 1rem; }
 
   .contact-form__label {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: -0.028rem;
     color: var(--brand-blue);
   }
 
@@ -109,7 +127,7 @@ import Reveals from '../components/Reveals.astro';
     border: 0;
     border-bottom: 1px solid rgba(255, 253, 226, 0.4);
     padding: 1.2rem 0;
-    font-family: var(--font-body);
+    font-family: var(--font-twk);
     font-size: 1.8rem;
     color: var(--brand-yellow);
     transition: border-color var(--d-micro) var(--easeOutQuart);
@@ -125,8 +143,9 @@ import Reveals from '../components/Reveals.astro';
 
   .contact-form select {
     appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--brand-yellow) 50%),
-                      linear-gradient(135deg, var(--brand-yellow) 50%, transparent 50%);
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--brand-yellow) 50%),
+      linear-gradient(135deg, var(--brand-yellow) 50%, transparent 50%);
     background-position: calc(100% - 14px) 50%, calc(100% - 8px) 50%;
     background-size: 6px 6px;
     background-repeat: no-repeat;
@@ -145,17 +164,35 @@ import Reveals from '../components/Reveals.astro';
 
   .contact-form__row--cta { margin-top: 1.6rem; }
 
-  .contact-direct__eyebrow { color: var(--text-secondary); margin-bottom: 1.6rem; }
+  .contact-direct {
+    padding: 6rem 0 12rem;
+    border-top: 1px solid rgba(255, 253, 226, 0.12);
+  }
+
+  .contact-direct__eyebrow {
+    color: var(--text-secondary);
+    margin-bottom: 2.4rem;
+  }
+
   .contact-direct__email {
     display: inline-block;
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 0.4rem;
-    transition: color var(--d-micro) var(--easeOutQuart);
+    font-family: var(--font-twk);
+    font-weight: 600;
+    font-size: 2.4rem;
+    text-transform: uppercase;
+    letter-spacing: -0.04rem;
+    margin-bottom: 4rem;
   }
-  .contact-direct__email:hover { color: var(--brand-blue); }
+
+  @media (min-width: 768px)  { .contact-direct__email { font-size: 3.2rem; } }
+  @media (min-width: 1200px) { .contact-direct__email { font-size: 4rem; } }
+
   .contact-direct__note {
-    margin-top: 4rem;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    text-transform: uppercase;
     color: var(--text-secondary);
+    letter-spacing: 0.02em;
   }
 </style>
 

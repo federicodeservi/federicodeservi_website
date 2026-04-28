@@ -1,22 +1,17 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SectionNumber from '../../components/SectionNumber.astro';
 import Reveals from '../../components/Reveals.astro';
+import DisplacementImage from '../../components/DisplacementImage.astro';
 import { u } from '../../lib/url';
 
 export async function getStaticPaths() {
   const entries = await getCollection('work');
   const sorted = entries.sort((a, b) => a.data.order - b.data.order);
-
-  return sorted.map((entry, i) => {
-    const prev = sorted[i - 1] ?? null;
-    const next = sorted[i + 1] ?? null;
-    return {
-      params: { slug: entry.id },
-      props: { entry, prev, next },
-    };
-  });
+  return sorted.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: sorted[i - 1] ?? null, next: sorted[i + 1] ?? null },
+  }));
 }
 
 interface Props {
@@ -35,205 +30,155 @@ const jsonLd = {
   creator: { '@type': 'Person', name: 'Federico de Servi' },
   about: d.summary,
   dateCreated: d.year,
-  client: d.client,
 };
 ---
 
-<BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd}>
+<BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd} hideScrollIndicator>
   <Reveals />
 
   <article class="case">
     <!-- Hero -->
-    <section class="section section--case-hero" aria-labelledby="case-h1">
-      <div class="section__inner grid">
-        <div class="case-hero__content">
-          <p class="t-mono case-hero__eyebrow" data-reveal>WORK / {d.number}</p>
-          <h1 id="case-h1" class="t-h1 case-hero__title" data-reveal>{d.title}</h1>
+    <section class="case-hero">
+      <div class="container">
+        <p class="case-hero__eyebrow t-italic-sm" data-reveal>Work / {d.number}</p>
+        <h1 class="case-hero__title" data-reveal>{d.title}</h1>
 
-          <dl class="meta-table case-hero__meta" data-reveal>
-            <div><dt>Client</dt><dd>{d.client}</dd></div>
-            <div><dt>Role</dt><dd>{d.role}</dd></div>
-            <div><dt>Year</dt><dd>{d.year}</dd></div>
-            <div><dt>Result</dt><dd>{d.result}</dd></div>
-            {d.links && d.links.length > 0 && (
-              <div>
-                <dt>Link</dt>
-                <dd>
-                  {d.links.map((l, i) => (
-                    <>
-                      <a href={l.href} target="_blank" rel="noopener noreferrer" class="link-inline" data-cursor="link">{l.label}</a>
-                      {i < d.links!.length - 1 && <span class="meta-sep" aria-hidden="true"> · </span>}
-                    </>
-                  ))}
-                </dd>
-              </div>
-            )}
-          </dl>
-        </div>
+        <dl class="meta-table" data-reveal-stagger>
+          <div data-reveal-item><dt>Client</dt><dd>{d.client}</dd></div>
+          <div data-reveal-item><dt>Role</dt><dd>{d.role}</dd></div>
+          <div data-reveal-item><dt>Year</dt><dd>{d.year}</dd></div>
+          <div data-reveal-item><dt>Result</dt><dd>{d.result}</dd></div>
+          {d.links && d.links.length > 0 && (
+            <div data-reveal-item>
+              <dt>Link</dt>
+              <dd>
+                {d.links.map((l, i) => (
+                  <>
+                    <a href={l.href} target="_blank" rel="noopener noreferrer" class="hover-line">{l.label}</a>
+                    {i < d.links!.length - 1 && <span class="meta-sep" aria-hidden="true"> · </span>}
+                  </>
+                ))}
+              </dd>
+            </div>
+          )}
+        </dl>
       </div>
     </section>
 
-    <!-- 01 Context -->
-    <section class="section">
-      <div class="section__inner grid">
-        <SectionNumber number="01" label="Context" />
-        <div class="case-block">
-          <h2 class="t-h2" data-reveal>Context.</h2>
+    <!-- Hero visual -->
+    <section class="case-visual case-visual--hero" data-reveal>
+      <DisplacementImage color={d.thumbColor} aspect="16 / 9" alt={d.title} />
+    </section>
+
+    <!-- Context -->
+    <section class="case-section">
+      <div class="container">
+        <p class="case-section__index t-italic-sm" data-reveal><em>01 — Context</em></p>
+        <div class="case-section__body">
           {d.context.map((p) => (
-            <p class="t-body-lg" data-reveal>{p}</p>
+            <p class="case-section__p" data-reveal>{p}</p>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- 02 Approach -->
-    <section class="section">
-      <div class="section__inner grid">
-        <SectionNumber number="02" label="Approach" />
-        <div class="case-block">
-          <h2 class="t-h2" data-reveal>Approach.</h2>
-          <p class="t-body-lg" data-reveal>{d.approach.intro}</p>
-          <ul class="case-steps" data-reveal-group>
-            {d.approach.steps.map((s) => (
-              <li class="case-steps__item" data-reveal-item>
-                <p class="t-mono case-steps__num">{s.num}</p>
-                <p class="t-body">{s.text}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <!-- Approach -->
+    <section class="case-section">
+      <div class="container">
+        <p class="case-section__index t-italic-sm" data-reveal><em>02 — Approach</em></p>
+        <p class="case-section__p" data-reveal>{d.approach.intro}</p>
+
+        <ul class="case-steps" data-reveal-stagger>
+          {d.approach.steps.map((s) => (
+            <li class="case-steps__item" data-reveal-item>
+              <p class="case-steps__num">{s.num}</p>
+              <p class="case-steps__text">{s.text}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
 
-    <!-- 03 Visual -->
-    <section class="section">
-      <div class="section__inner grid">
-        <SectionNumber number="03" label="Visual" />
-        <div class="case-block">
-          <h2 class="t-h2" data-reveal>Visual.</h2>
-          <div class="case-visual" data-reveal>
-            <div class="case-visual__placeholder" style={`--thumb-color: ${d.thumbColor};`}>
-              <span>{d.visualNote ?? 'visual · placeholder'}</span>
-            </div>
-          </div>
-        </div>
+    <!-- Outcome -->
+    <section class="case-section">
+      <div class="container">
+        <p class="case-section__index t-italic-sm" data-reveal><em>03 — Outcome</em></p>
+        <dl class="meta-table" data-reveal-stagger>
+          {d.outcome.map((o) => (
+            <div data-reveal-item><dt>{o.label}</dt><dd>{o.value}</dd></div>
+          ))}
+        </dl>
+        {d.closing && (
+          <p class="case-closing" data-reveal>{d.closing}</p>
+        )}
       </div>
     </section>
 
-    {d.detailNote && (
-      <!-- 04 Detail -->
-      <section class="section">
-        <div class="section__inner grid">
-          <SectionNumber number="04" label="Detail" />
-          <div class="case-block">
-            <h2 class="t-h2" data-reveal>Detail.</h2>
-            <div class="case-visual case-visual--small" data-reveal>
-              <div class="case-visual__placeholder" style={`--thumb-color: ${d.thumbColor};`}>
-                <span>{d.detailNote}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    )}
-
-    <!-- 05 Outcome -->
-    <section class="section">
-      <div class="section__inner grid">
-        <SectionNumber number="05" label="Outcome" />
-        <div class="case-block">
-          <h2 class="t-h2" data-reveal>Outcome.</h2>
-          <dl class="meta-table case-outcome" data-reveal>
-            {d.outcome.map((o) => (
-              <div><dt>{o.label}</dt><dd>{o.value}</dd></div>
-            ))}
-          </dl>
-          {d.closing && <p class="t-body-lg case-closing" data-reveal>{d.closing}</p>}
-        </div>
-      </div>
-    </section>
-
-    <!-- 06 Next -->
-    <section class="section section--case-next">
-      <div class="section__inner grid">
-        <SectionNumber number="06" label="Next" />
-        <div class="case-block case-block--next">
-          <nav class="case-nav" aria-label="Case study navigation" data-reveal>
-            <div class="case-nav__col">
-              {prev ? (
-                <a href={u(`/work/${prev.id}`)} class="case-nav__link" data-cursor="link">
-                  <span class="t-mono">← Prev</span>
-                  <span class="t-h3">{prev.data.title}</span>
-                </a>
-              ) : (
-                <span class="case-nav__placeholder t-mono">— Start —</span>
-              )}
-            </div>
-            <div class="case-nav__col case-nav__col--center">
-              <a href={u('/work')} class="case-nav__link" data-cursor="link">
-                <span class="t-mono">Index</span>
-                <span class="t-h3">/work</span>
+    <!-- Next -->
+    <section class="case-next">
+      <div class="container">
+        <nav class="case-nav" aria-label="Case study navigation">
+          <div class="case-nav__col" data-reveal>
+            {prev ? (
+              <a href={u(`/work/${prev.id}`)} class="case-nav__link">
+                <span class="case-nav__label">← Prev</span>
+                <span class="case-nav__title">{prev.data.title}</span>
               </a>
-            </div>
-            <div class="case-nav__col case-nav__col--right">
-              {next ? (
-                <a href={u(`/work/${next.id}`)} class="case-nav__link" data-cursor="link">
-                  <span class="t-mono">Next →</span>
-                  <span class="t-h3">{next.data.title}</span>
-                </a>
-              ) : (
-                <span class="case-nav__placeholder t-mono">— End —</span>
-              )}
-            </div>
-          </nav>
-        </div>
+            ) : (
+              <span class="case-nav__placeholder">— Start —</span>
+            )}
+          </div>
+          <div class="case-nav__col case-nav__col--center" data-reveal>
+            <a href={u('/work')} class="case-nav__link">
+              <span class="case-nav__label">Index</span>
+              <span class="case-nav__title">/work</span>
+            </a>
+          </div>
+          <div class="case-nav__col case-nav__col--right" data-reveal>
+            {next ? (
+              <a href={u(`/work/${next.id}`)} class="case-nav__link">
+                <span class="case-nav__label">Next →</span>
+                <span class="case-nav__title">{next.data.title}</span>
+              </a>
+            ) : (
+              <span class="case-nav__placeholder">— End —</span>
+            )}
+          </div>
+        </nav>
       </div>
     </section>
   </article>
 </BaseLayout>
 
 <style>
-  .section {
-    position: relative;
-    padding: 8rem 0;
-  }
-
-  .section--case-hero {
-    padding: 16rem 0 8rem;
-    min-height: 80vh;
+  .case-hero {
+    padding: 16rem 0 4rem;
+    min-height: 60svh;
     display: flex;
     align-items: center;
   }
 
-  .section__inner {
-    width: 100%;
-    padding-left: var(--padding-x);
-    padding-right: var(--padding-x);
-    position: relative;
-  }
-
-  .case-hero__content {
-    grid-column: 3 / -1;
-  }
-
-  .case-hero__eyebrow {
-    color: var(--brand-blue);
-    margin-bottom: 2.4rem;
-  }
+  .case-hero__eyebrow { color: var(--text-secondary); margin-bottom: 2.4rem; }
 
   .case-hero__title {
+    font-family: var(--font-twk);
+    font-weight: 600;
+    line-height: 0.9em;
+    letter-spacing: -0.12rem;
+    text-transform: uppercase;
+    font-size: 4rem;
     margin-bottom: 4.8rem;
   }
 
-  .case-hero__meta {
-    max-width: 64rem;
-  }
+  @media (min-width: 768px)  { .case-hero__title { font-size: 6.4rem; letter-spacing: -0.192rem; } }
+  @media (min-width: 1200px) { .case-hero__title { font-size: 11rem; letter-spacing: -0.33rem; } }
 
+  /* Meta table */
   .meta-table {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0;
     border-top: 1px solid rgba(255, 253, 226, 0.18);
+    max-width: 80rem;
   }
 
   .meta-table > div {
@@ -249,33 +194,62 @@ const jsonLd = {
     font-family: var(--font-mono);
     font-size: 1.3rem;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.028rem;
     margin: 0;
   }
 
-  .meta-table dt {
+  .meta-table dt { color: var(--text-secondary); }
+  .meta-sep { opacity: 0.5; margin: 0 0.4rem; }
+
+  /* Case visual */
+  .case-visual {
+    padding: 6rem 0;
+  }
+
+  .case-visual--hero {
+    padding: 0 0 8rem;
+  }
+
+  .case-visual__placeholder {
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    color: var(--brand-yellow);
+    font-family: var(--font-twk);
+    font-weight: 600;
+    font-size: 3.2rem;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+  }
+
+  @media (min-width: 1200px) { .case-visual__placeholder { font-size: 6.4rem; } }
+
+  /* Sections */
+  .case-section {
+    padding: 8rem 0;
+    border-top: 1px solid rgba(255, 253, 226, 0.08);
+  }
+
+  @media (min-width: 1200px) { .case-section { padding: 12rem 0; } }
+
+  .case-section__index {
     color: var(--text-secondary);
-  }
-
-  .meta-sep {
-    margin: 0 0.4rem;
-    opacity: 0.5;
-  }
-
-  .case-block {
-    grid-column: 3 / -1;
-  }
-  @media (min-width: 1200px) {
-    .case-block { grid-column: 5 / span 9; }
-  }
-
-  .case-block > h2 {
     margin-bottom: 4rem;
   }
 
-  .case-block > p + p {
-    margin-top: 1.6rem;
+  .case-section__body { max-width: 72rem; }
+
+  .case-section__p {
+    font-size: 2rem;
+    line-height: 1.4em;
+    letter-spacing: -0.02rem;
+    max-width: 72rem;
   }
+
+  @media (min-width: 1200px) { .case-section__p { font-size: 2.4rem; line-height: 1.4em; } }
+
+  .case-section__p + .case-section__p { margin-top: 2rem; }
 
   .case-steps {
     margin-top: 4rem;
@@ -283,66 +257,49 @@ const jsonLd = {
     grid-template-columns: 1fr;
     gap: 2.4rem;
   }
-  @media (min-width: 768px) {
-    .case-steps { grid-template-columns: repeat(3, 1fr); }
-  }
+  @media (min-width: 768px) { .case-steps { grid-template-columns: repeat(3, 1fr); } }
 
   .case-steps__item {
     border-top: 1px solid rgba(255, 253, 226, 0.18);
     padding-top: 1.6rem;
   }
+
   .case-steps__num {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    text-transform: uppercase;
     color: var(--brand-blue);
     margin-bottom: 1.2rem;
   }
 
-  .case-visual {
-    margin-top: 4rem;
-    aspect-ratio: 16 / 10;
-    border-radius: var(--r-sm);
-    overflow: hidden;
-  }
-  .case-visual--small { aspect-ratio: 4 / 3; max-width: 80rem; }
-
-  .case-visual__placeholder {
-    height: 100%;
-    background: linear-gradient(135deg, var(--thumb-color, var(--brand-blue)) 0%, color-mix(in oklab, var(--thumb-color, var(--brand-blue)) 50%, #000) 100%);
-    display: grid;
-    place-items: center;
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    color: var(--brand-yellow);
-    letter-spacing: 0.04em;
-    opacity: 0.85;
-  }
-
-  .case-outcome {
-    max-width: 72rem;
+  .case-steps__text {
+    font-size: 1.6rem;
+    line-height: 1.4em;
   }
 
   .case-closing {
     margin-top: 4rem;
-    font-family: var(--font-italic);
+    font-family: var(--font-ivory);
     font-style: italic;
-    font-size: 2.4rem;
-    line-height: 1.2;
-    color: var(--brand-yellow);
+    font-weight: 400;
+    font-size: 2.8rem;
+    line-height: 1.2em;
   }
+
+  @media (min-width: 1200px) { .case-closing { font-size: 4rem; } }
 
   /* Next nav */
-  .section--case-next {
+  .case-next {
+    padding: 6rem 0 12rem;
     border-top: 1px solid rgba(255, 253, 226, 0.18);
-    margin-top: 4rem;
   }
-
-  .case-block--next { grid-column: 1 / -1; }
 
   .case-nav {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2.4rem;
   }
+
   @media (min-width: 768px) {
     .case-nav { grid-template-columns: 1fr 1fr 1fr; gap: 3.2rem; align-items: center; }
   }
@@ -353,17 +310,33 @@ const jsonLd = {
   .case-nav__link {
     display: inline-flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.6rem;
     transition: color var(--d-micro) var(--easeOutQuart);
   }
+
   .case-nav__link:hover { color: var(--brand-blue); }
 
-  .case-nav__placeholder { color: var(--text-disabled); }
-
-  .link-inline {
-    display: inline-block;
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 0.2rem;
+  .case-nav__label {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
   }
-  .link-inline:hover { color: var(--brand-blue); }
+
+  .case-nav__title {
+    font-family: var(--font-twk);
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 1em;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 1200px) { .case-nav__title { font-size: 2.4rem; } }
+
+  .case-nav__placeholder {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: var(--text-disabled);
+  }
 </style>

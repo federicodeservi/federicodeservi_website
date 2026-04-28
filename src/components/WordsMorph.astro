@@ -1,71 +1,58 @@
 ---
-// 3D rotateX flip cycling through words in place. Wrapper width sized
-// to the longest word to avoid layout shift.
+// Words morph using opacity + blur crossfade — the fromanother signature.
+// Words stack via grid, only the active one is fully visible.
 export interface Props {
   words: string[];
-  italicIdx?: number[]; // indices to render in Instrument Serif italic
+  italicIdx?: number[];
+  interval?: number; // ms between swaps
 }
-const { words, italicIdx = [] } = Astro.props;
+const { words, italicIdx = [], interval = 2400 } = Astro.props;
 ---
 
-<span class="words-3d" data-words-morph>
-  <span class="words-3d__measure" aria-hidden="true">
-    {words.map((w) => <span>{w}</span>)}
-  </span>
-  <span class="words-3d__inner">
-    {words.map((w, i) => (
-      <span class={`words-3d__word${italicIdx.includes(i) ? ' words-3d__word--italic' : ''}`}>{w}</span>
-    ))}
-  </span>
+<span class="words" data-words-morph data-interval={interval}>
+  {words.map((w, i) => (
+    <span
+      class={`words__word${italicIdx.includes(i) ? ' words__word--italic' : ''}${i === 0 ? ' is-active' : ''}`}
+      data-word-idx={i}
+    >
+      {w}
+    </span>
+  ))}
 </span>
 
 <style>
-  .words-3d {
-    perspective: 1000px;
-    display: inline-block;
-    position: relative;
+  .words {
+    display: inline-grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     vertical-align: baseline;
   }
 
-  .words-3d__measure {
-    visibility: hidden;
-    pointer-events: none;
-    display: inline-block;
-    position: relative;
+  .words > * {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
   }
 
-  .words-3d__measure span {
-    display: block;
-    line-height: inherit;
+  .words__word {
     white-space: nowrap;
-  }
-
-  /* The first measure span sits in normal flow to size the wrapper width;
-     subsequent ones stack to ensure max-width detection. */
-  .words-3d__measure span + span {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .words-3d__inner {
-    position: absolute;
-    inset: 0;
-    transform-style: preserve-3d;
-  }
-
-  .words-3d__word {
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: nowrap;
-    backface-visibility: hidden;
+    text-wrap: nowrap;
+    word-wrap: nowrap;
+    opacity: 0;
+    filter: blur(10px);
+    transition:
+      opacity var(--d-reveal) var(--easeOutQuart),
+      filter var(--d-reveal) var(--easeOutQuart);
+    will-change: opacity, filter;
     color: var(--brand-blue);
-    will-change: transform, opacity;
   }
 
-  .words-3d__word--italic {
-    font-family: var(--font-italic);
+  .words__word.is-active {
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  .words__word--italic {
+    font-family: var(--font-ivory);
     font-style: italic;
     font-weight: 400;
     letter-spacing: 0;
@@ -74,39 +61,36 @@ const { words, italicIdx = [] } = Astro.props;
 </style>
 
 <script>
-  import { gsap } from 'gsap';
   import { reducedMotion } from '../lib/motion';
 
   const setup = () => {
-    const wrappers = document.querySelectorAll<HTMLElement>('[data-words-morph]');
-    wrappers.forEach((wrap) => {
-      const words = Array.from(wrap.querySelectorAll<HTMLElement>('.words-3d__word'));
-      if (!words.length) return;
+    document.querySelectorAll<HTMLElement>('[data-words-morph]').forEach((wrap) => {
+      const words = Array.from(wrap.querySelectorAll<HTMLElement>('.words__word'));
+      if (words.length < 2) return;
 
-      // initial state: only first word visible
-      gsap.set(words, { rotateX: 90, opacity: 0 });
-      gsap.set(words[0]!, { rotateX: 0, opacity: 1 });
+      const interval = parseInt(wrap.dataset.interval || '2400', 10);
+      let idx = 0;
 
-      if (reducedMotion()) {
-        // simple fade cycle, no 3D
-        gsap.set(words, { rotateX: 0 });
-        let i = 0;
-        setInterval(() => {
-          gsap.to(words[i]!, { opacity: 0, duration: 0.2 });
-          i = (i + 1) % words.length;
-          gsap.to(words[i]!, { opacity: 1, duration: 0.2 });
-        }, 2800);
-        return;
+      const tick = () => {
+        const prev = words[idx]!;
+        idx = (idx + 1) % words.length;
+        const next = words[idx]!;
+        prev.classList.remove('is-active');
+        next.classList.add('is-active');
+      };
+
+      if (reducedMotion()) return;
+
+      // Wait for the page loader to finish before starting
+      const start = () => {
+        setInterval(tick, interval);
+      };
+
+      if (sessionStorage.getItem('fds-loader-shown') === '1') {
+        start();
+      } else {
+        setTimeout(start, 2400);
       }
-
-      const tl = gsap.timeline({ repeat: -1, defaults: { ease: 'power2.inOut' } });
-      words.forEach((word, i) => {
-        const next = words[(i + 1) % words.length]!;
-        tl.to({}, { duration: 2.0 })
-          .set(next, { rotateX: 90, opacity: 0 })
-          .to(word, { rotateX: -90, opacity: 0, duration: 0.5 })
-          .to(next, { rotateX: 0, opacity: 1, duration: 0.5 }, '<');
-      });
     });
   };
 

@@ -1,0 +1,338 @@
+---
+import { u } from '../lib/url';
+export interface Props {
+  projects: {
+    slug: string;
+    name: string;
+    services: string;
+    color: string;
+    ratio: string;
+  }[];
+}
+const { projects } = Astro.props;
+---
+
+<section class="showcase" data-section data-section-name="Selected work" style={`--total-items: ${projects.length}`}>
+  <div class="showcase__index">
+    <p class="t-italic-sm" data-reveal>02 — <em>Selected work</em></p>
+  </div>
+
+  <!-- Names stack: only the active one is visible -->
+  <div class="showcase__names">
+    {projects.map((p, i) => (
+      <h2 class={`showcase__name${i === 0 ? ' is-active' : ''}`} data-name-idx={i}>
+        <a href={u(`/work/${p.slug}`)} class="hover-line" data-cursor="image" data-image-name={p.name}>{p.name}</a>
+      </h2>
+    ))}
+  </div>
+
+  <!-- Thumbnails slider (DOM, drag-enabled) -->
+  <div class="showcase__slider" data-showcase-slider>
+    <div class="showcase__track" data-showcase-track>
+      {projects.map((p, i) => (
+        <a
+          class="showcase__slide"
+          href={u(`/work/${p.slug}`)}
+          data-slide-idx={i}
+          data-cursor="link"
+          aria-label={p.name}
+        >
+          <div class="showcase__slide-media" style={`background: linear-gradient(135deg, ${p.color}, color-mix(in oklab, ${p.color} 50%, #000)); aspect-ratio: ${p.ratio};`}>
+            <span class="showcase__slide-meta">{p.services}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div class="showcase__services">
+    {projects.map((p, i) => (
+      <p class={`showcase__service-item${i === 0 ? ' is-active' : ''}`} data-service-idx={i}>{p.services}</p>
+    ))}
+  </div>
+
+  <!-- Slider indicator dots -->
+  <div class="showcase__dots" aria-hidden="true">
+    {projects.map((_, i) => (
+      <button class={`showcase__dot${i === 0 ? ' is-active' : ''}`} data-dot-idx={i} type="button"></button>
+    ))}
+  </div>
+
+  <a href={u('/work')} class="showcase__cta hover-line" data-reveal>See all work →</a>
+</section>
+
+<style>
+  .showcase {
+    --total-items: 1;
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    padding: 8.7rem 0 12rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+  }
+
+  .showcase__index {
+    text-align: center;
+    padding-bottom: 3.2rem;
+  }
+
+  /* Names stack — overlays */
+  .showcase__names {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    place-items: center;
+    text-align: center;
+    pointer-events: none;
+    z-index: 2;
+    width: calc(100% - var(--padding-x) * 2);
+    mix-blend-mode: difference;
+  }
+
+  .showcase__names > * { grid-column: 1 / -1; grid-row: 1 / -1; }
+
+  .showcase__name {
+    font-family: var(--font-twk);
+    font-weight: 600;
+    font-size: 3.2rem;
+    line-height: 1em;
+    letter-spacing: -0.096rem;
+    text-transform: uppercase;
+    opacity: 0;
+    filter: blur(10px);
+    transition:
+      opacity 1.4s var(--easeOutQuart),
+      filter 1.4s var(--easeOutQuart);
+    pointer-events: none;
+  }
+
+  @media (min-width: 768px)  { .showcase__name { font-size: 4.8rem; letter-spacing: -0.144rem; } }
+  @media (min-width: 1200px) { .showcase__name { font-size: 8.8rem; letter-spacing: -0.264rem; } }
+
+  .showcase__name.is-active {
+    opacity: 1;
+    filter: blur(0);
+    pointer-events: auto;
+  }
+
+  .showcase__name a { color: inherit; pointer-events: auto; }
+
+  /* Slider */
+  .showcase__slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 6.4rem 0;
+  }
+
+  .showcase__track {
+    --slide-width: 28rem;
+    --slide-gap: 1.6rem;
+    --carousel-index: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--slide-gap);
+    flex-shrink: 0;
+    transform: translateX(calc(50vw - var(--slide-width) / 2 - var(--carousel-index) * (var(--slide-width) + var(--slide-gap))));
+    transition: transform 1.4s var(--easeOutQuart);
+    will-change: transform;
+  }
+
+  @media (min-width: 768px)  { .showcase__track { --slide-width: 34.3rem; --slide-gap: 0.8rem; } }
+  @media (min-width: 1200px) { .showcase__track { --slide-width: 40rem; --slide-gap: 2.4rem; } }
+
+  .showcase__slide {
+    flex: 0 0 var(--slide-width);
+    width: var(--slide-width);
+    display: block;
+    position: relative;
+  }
+
+  .showcase__slide-media {
+    width: 100%;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    transition: transform var(--d-base) var(--easeOutQuart),
+                filter var(--d-base) var(--easeOutQuart);
+  }
+
+  .showcase__slide[data-slide-idx]:not(.is-active) .showcase__slide-media {
+    filter: brightness(0.4) blur(2px);
+  }
+
+  .showcase__slide-meta {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 1.6rem;
+    color: var(--brand-yellow);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transition: opacity var(--d-micro) var(--easeOutQuart);
+  }
+
+  .showcase__slide.is-active .showcase__slide-meta { opacity: 1; }
+
+  /* Services list (only active visible) */
+  .showcase__services {
+    text-align: center;
+    margin-top: 2.4rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    place-items: center;
+    pointer-events: none;
+    height: 1.5em;
+  }
+
+  .showcase__services > * { grid-column: 1 / -1; grid-row: 1 / -1; }
+
+  .showcase__service-item {
+    font-family: var(--font-twk);
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 1.4em;
+    letter-spacing: -0.028rem;
+    color: var(--text-secondary);
+    opacity: 0;
+    filter: blur(8px);
+    transition: opacity 1.4s var(--easeOutQuart), filter 1.4s var(--easeOutQuart);
+  }
+
+  .showcase__service-item.is-active { opacity: 1; filter: blur(0); }
+
+  /* Indicator dots */
+  .showcase__dots {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 2.4rem;
+  }
+
+  .showcase__dot {
+    width: 3.5rem;
+    height: 0.2rem;
+    background: var(--text-disabled);
+    border: 0;
+    padding: 0;
+    transition: background-color var(--d-micro) var(--easeOutQuart);
+    cursor: pointer;
+  }
+
+  .showcase__dot.is-active { background: var(--brand-yellow); }
+
+  .showcase__cta {
+    text-align: center;
+    margin-top: 4.8rem;
+    align-self: center;
+    justify-self: center;
+    font-family: var(--font-twk);
+    font-weight: 500;
+    font-size: 1.6rem;
+  }
+</style>
+
+<script>
+  const setup = () => {
+    const slider = document.querySelector<HTMLElement>('[data-showcase-slider]');
+    const track = document.querySelector<HTMLElement>('[data-showcase-track]');
+    if (!slider || !track) return;
+
+    const slides = Array.from(track.querySelectorAll<HTMLElement>('.showcase__slide'));
+    const names = Array.from(document.querySelectorAll<HTMLElement>('.showcase__name'));
+    const services = Array.from(document.querySelectorAll<HTMLElement>('.showcase__service-item'));
+    const dots = Array.from(document.querySelectorAll<HTMLElement>('.showcase__dot'));
+    if (!slides.length) return;
+
+    let current = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragOffset = 0;
+
+    const setActive = (idx: number) => {
+      current = ((idx % slides.length) + slides.length) % slides.length;
+      track.style.setProperty('--carousel-index', String(current));
+      slides.forEach((s, i) => s.classList.toggle('is-active', i === current));
+      names.forEach((n, i) => n.classList.toggle('is-active', i === current));
+      services.forEach((sv, i) => sv.classList.toggle('is-active', i === current));
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === current));
+    };
+
+    setActive(0);
+
+    slides.forEach((slide, idx) => {
+      slide.addEventListener('click', (e) => {
+        if (idx !== current) {
+          e.preventDefault();
+          setActive(idx);
+        }
+      });
+    });
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => setActive(i)));
+
+    // Keyboard nav
+    slider.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') setActive(current + 1);
+      if (e.key === 'ArrowLeft') setActive(current - 1);
+    });
+
+    // Drag
+    const onPointerDown = (e: PointerEvent) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragOffset = 0;
+      track.style.transition = 'none';
+      slider.setPointerCapture(e.pointerId);
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!isDragging) return;
+      dragOffset = e.clientX - dragStartX;
+      const slideWidth = slides[0]!.offsetWidth + 16;
+      const offsetUnits = dragOffset / slideWidth;
+      track.style.setProperty('--carousel-index', String(current - offsetUnits));
+    };
+
+    const onPointerUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.transition = '';
+      const slideWidth = slides[0]!.offsetWidth + 16;
+      const moved = Math.round(-dragOffset / slideWidth);
+      setActive(current + moved);
+    };
+
+    slider.addEventListener('pointerdown', onPointerDown);
+    slider.addEventListener('pointermove', onPointerMove);
+    slider.addEventListener('pointerup', onPointerUp);
+    slider.addEventListener('pointercancel', onPointerUp);
+
+    // Touch swipe
+    let touchStartX = 0;
+    slider.addEventListener('touchstart', (e) => { touchStartX = e.touches[0]!.clientX; }, { passive: true });
+    slider.addEventListener('touchend', (e) => {
+      const delta = e.changedTouches[0]!.clientX - touchStartX;
+      if (Math.abs(delta) > 40) setActive(current + (delta < 0 ? 1 : -1));
+    }, { passive: true });
+  };
+
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>

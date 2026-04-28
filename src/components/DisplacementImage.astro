@@ -1,0 +1,259 @@
+---
+// Vanilla OGL displacement effect on hover (~5kb gz vs R3F's 240kb).
+// Uses a procedural noise + cursor-driven distortion. Falls back to a
+// CSS gradient if WebGL is unavailable.
+export interface Props {
+  color: string;
+  aspect?: string;
+  imageUrl?: string;
+  alt?: string;
+}
+const { color, aspect = '16 / 10', imageUrl, alt = '' } = Astro.props;
+---
+
+<div
+  class="disp"
+  data-disp
+  data-color={color}
+  data-image={imageUrl}
+  style={`aspect-ratio: ${aspect}; --disp-color: ${color};`}
+  aria-label={alt || undefined}
+>
+  <div class="disp__fallback"></div>
+</div>
+
+<style>
+  .disp {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2px;
+    cursor: pointer;
+    background: var(--disp-color);
+  }
+
+  .disp__fallback {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 70% 30%, rgba(255, 253, 226, 0.12), transparent 50%),
+      linear-gradient(135deg, var(--disp-color), color-mix(in oklab, var(--disp-color) 45%, #000));
+    transition: transform var(--d-base) var(--easeOutQuart),
+                filter var(--d-base) var(--easeOutQuart);
+  }
+
+  .disp:hover .disp__fallback {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+  }
+
+  .disp canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    inset: 0;
+  }
+
+  .disp.is-active .disp__fallback { display: none; }
+</style>
+
+<script>
+  import { Renderer, Program, Mesh, Triangle, Texture, Vec2, Color } from 'ogl';
+  import { reducedMotion } from '../lib/motion';
+
+  const VERT = `
+    attribute vec2 uv;
+    attribute vec2 position;
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 0.0, 1.0);
+    }
+  `;
+
+  const FRAG = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform sampler2D u_image;
+    uniform vec3 u_color;
+    uniform float u_hasImage;
+    uniform float u_intensity;
+    uniform float u_time;
+    uniform vec2 u_mouse;
+    uniform vec2 u_resolution;
+
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      float a = hash(i);
+      float b = hash(i + vec2(1.0, 0.0));
+      float c = hash(i + vec2(0.0, 1.0));
+      float d = hash(i + vec2(1.0, 1.0));
+      return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+    }
+
+    void main() {
+      vec2 uv = vUv;
+      // procedural distortion
+      float n = noise(uv * 5.5 + u_time * 0.18);
+      vec2 disp = (vec2(n) - 0.5) * u_intensity * 0.18;
+      // cursor-driven displacement, smooth falloff
+      vec2 d = uv - u_mouse;
+      float falloff = smoothstep(0.55, 0.0, length(d));
+      disp += d * u_intensity * 0.32 * falloff;
+
+      vec2 sUV = uv + disp;
+
+      vec3 color;
+      if (u_hasImage > 0.5) {
+        color = texture2D(u_image, sUV).rgb;
+      } else {
+        // procedural gradient based on tint color
+        vec3 base = u_color;
+        vec3 dark = base * 0.32;
+        float g = mix(1.0, 0.05, sUV.y);
+        color = mix(dark, base, g);
+        // soft hot spot
+        float spot = smoothstep(0.0, 1.4, 1.0 - length(sUV - vec2(0.7, 0.3)));
+        color += vec3(spot * 0.10);
+        // slight blue tint towards bottom
+        color = mix(color, color * vec3(0.85, 0.9, 1.1), sUV.y * 0.4);
+      }
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  const hexToRgb = (hex: string): [number, number, number] => {
+    const c = new Color(hex);
+    return [c.r, c.g, c.b];
+  };
+
+  const setupOne = (host: HTMLElement) => {
+    if (reducedMotion()) return;
+    if (host.classList.contains('is-active')) return;
+
+    const colorHex = host.dataset.color || '#1740a9';
+    const imageUrl = host.dataset.image || '';
+
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({
+        alpha: false,
+        antialias: false,
+        dpr: Math.min(2, window.devicePixelRatio || 1),
+        canvas: undefined,
+      });
+    } catch {
+      return;
+    }
+
+    const gl = renderer.gl;
+    if (!gl) return;
+
+    host.appendChild(gl.canvas);
+    host.classList.add('is-active');
+
+    const setSize = () => {
+      const r = host.getBoundingClientRect();
+      renderer.setSize(r.width, r.height);
+      uniforms.u_resolution.value.set(r.width, r.height);
+    };
+
+    const [r, g, b] = hexToRgb(colorHex);
+
+    const placeholderTex = new Texture(gl);
+    const uniforms = {
+      u_image: { value: placeholderTex },
+      u_color: { value: new Color(r, g, b) },
+      u_hasImage: { value: 0 },
+      u_intensity: { value: 0 },
+      u_time: { value: 0 },
+      u_mouse: { value: new Vec2(0.5, 0.5) },
+      u_resolution: { value: new Vec2(0, 0) },
+    };
+
+    const program = new Program(gl, {
+      vertex: VERT,
+      fragment: FRAG,
+      uniforms,
+    });
+
+    const geometry = new Triangle(gl);
+    const mesh = new Mesh(gl, { geometry, program });
+
+    if (imageUrl) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const tex = new Texture(gl, { image: img, generateMipmaps: false });
+        uniforms.u_image.value = tex;
+        uniforms.u_hasImage.value = 1;
+      };
+      img.src = imageUrl;
+    }
+
+    setSize();
+
+    const ro = new ResizeObserver(setSize);
+    ro.observe(host);
+
+    let target = 0;
+
+    const targetMouse = new Vec2(0.5, 0.5);
+
+    const onMove = (e: PointerEvent) => {
+      const r = host.getBoundingClientRect();
+      targetMouse.x = (e.clientX - r.left) / r.width;
+      targetMouse.y = 1 - (e.clientY - r.top) / r.height;
+    };
+
+    host.addEventListener('pointerenter', () => { target = 1; });
+    host.addEventListener('pointerleave', () => { target = 0; });
+    host.addEventListener('pointermove', onMove);
+
+    let raf = 0;
+    const tick = (time: number) => {
+      uniforms.u_time.value = time / 1000;
+      uniforms.u_intensity.value += (target - uniforms.u_intensity.value) * 0.08;
+      uniforms.u_mouse.value.x += (targetMouse.x - uniforms.u_mouse.value.x) * 0.12;
+      uniforms.u_mouse.value.y += (targetMouse.y - uniforms.u_mouse.value.y) * 0.12;
+      renderer.render({ scene: mesh });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    // Cleanup if host disappears (Astro view-transitions)
+    const cleanup = () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+    document.addEventListener('astro:before-preparation', cleanup, { once: true });
+  };
+
+  const setup = () => {
+    const hosts = document.querySelectorAll<HTMLElement>('[data-disp]');
+    if (!hosts.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          setupOne(entry.target as HTMLElement);
+          io.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '100px' },
+    );
+
+    hosts.forEach((host) => io.observe(host));
+  };
+
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>

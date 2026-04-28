@@ -1,0 +1,214 @@
+---
+// Scroll-driven WhatWeDo: items start as text-disabled, become brand-yellow
+// when their threshold is reached. Internal list items stagger-blur in.
+const items = [
+  {
+    num: '01',
+    category: 'Design',
+    list: ['Web design', 'UI/UX', 'Prototyping'],
+  },
+  {
+    num: '02',
+    category: 'Brand',
+    list: ['Brand identity', 'Editorial / libri', 'Visual systems'],
+  },
+  {
+    num: '03',
+    category: 'Sviluppo',
+    list: ['App mobile (Flutter)', 'Squarespace dev', 'Custom web (light)'],
+  },
+];
+---
+
+<section class="wwd" data-section data-section-name="What I do">
+  <div class="wwd__container container">
+    <div class="wwd__header">
+      <p class="wwd__index" data-reveal><span>01 — </span><em>What I do</em></p>
+      <h2 class="wwd__heading t-h2" data-reveal>
+        <span>Tre cose,</span>
+        <span><em class="wwd__heading-italic">fatte spesso</em></span>
+        <span>insieme.</span>
+      </h2>
+    </div>
+
+    <ol class="wwd__items" data-wwd-items>
+      {items.map((item, i) => (
+        <li class="wwd__item" data-wwd-item data-idx={i}>
+          <div class="wwd__item-grid">
+            <div class="wwd__item-meta">
+              <p class="wwd__item-num">{item.num}</p>
+              <p class="wwd__item-cat">{item.category}</p>
+            </div>
+            <ul class="wwd__item-list">
+              {item.list.map((l, j) => (
+                <li class="wwd__item-list-item" style={`--i: ${j}`}>{l}</li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .wwd {
+    position: relative;
+    padding: 12.2rem 0 30rem;
+  }
+
+  .wwd__container { position: relative; z-index: 1; }
+
+  .wwd__header { margin-bottom: 8rem; }
+  @media (min-width: 1200px) { .wwd__header { margin-bottom: 12rem; } }
+
+  .wwd__index {
+    font-family: var(--font-herbik);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 4rem;
+  }
+  @media (min-width: 1200px) { .wwd__index { font-size: 1.6rem; } }
+  .wwd__index em { font-style: italic; color: var(--brand-yellow); }
+
+  .wwd__heading {
+    display: flex;
+    flex-direction: column;
+    line-height: 0.9em;
+  }
+
+  .wwd__heading-italic {
+    font-family: var(--font-ivory);
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .wwd__items {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .wwd__item {
+    transition: color 1.4s var(--easeOutQuart);
+    color: var(--text-disabled);
+  }
+
+  .wwd__item.is-active { color: var(--brand-yellow); }
+
+  .wwd__item-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+  }
+
+  @media (min-width: 1200px) {
+    .wwd__item-grid {
+      grid-template-columns: repeat(var(--columns), 1fr);
+      gap: var(--gap-x);
+    }
+  }
+
+  .wwd__item-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 1.2rem;
+    grid-column: span 2;
+  }
+
+  @media (min-width: 1200px) {
+    .wwd__item-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.8rem;
+      position: sticky;
+      top: 50svh;
+      align-self: start;
+    }
+  }
+
+  .wwd__item-num {
+    font-family: var(--font-herbik);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 0.9em;
+  }
+
+  .wwd__item-cat {
+    font-family: var(--font-herbik);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 0.9em;
+    color: var(--text-secondary);
+  }
+
+  .wwd__item.is-active .wwd__item-cat { color: var(--brand-yellow); }
+
+  .wwd__item-list {
+    grid-column: 1 / -1;
+    font-family: var(--font-twk);
+    font-weight: 600;
+    font-size: 3.2rem;
+    line-height: 1em;
+    letter-spacing: -0.096rem;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 768px)  { .wwd__item-list { font-size: 4.8rem; letter-spacing: -0.144rem; } }
+  @media (min-width: 1200px) {
+    .wwd__item-list {
+      grid-column: 4 / -1;
+      font-size: 6.4rem;
+      letter-spacing: -0.192rem;
+    }
+  }
+
+  .wwd__item-list-item {
+    opacity: 0;
+    filter: blur(10px);
+    transition:
+      opacity 1.4s var(--easeOutQuart),
+      filter 1.4s var(--easeOutQuart);
+    transition-delay: calc(var(--i, 0) * 0.1s);
+    will-change: opacity, filter;
+  }
+
+  .wwd__item.is-reached .wwd__item-list-item {
+    opacity: 1;
+    filter: blur(0);
+  }
+</style>
+
+<script>
+  const setup = () => {
+    const items = Array.from(document.querySelectorAll<HTMLElement>('[data-wwd-item]'));
+    if (!items.length) return;
+
+    const onScroll = () => {
+      const center = window.scrollY + window.innerHeight * 0.55;
+      let activeIdx = -1;
+      items.forEach((it, i) => {
+        const r = it.getBoundingClientRect();
+        const top = r.top + window.scrollY;
+        const reached = center >= top + r.height * 0.15;
+        it.classList.toggle('is-reached', reached);
+        if (reached) activeIdx = i;
+      });
+      items.forEach((it, i) => {
+        it.classList.toggle('is-active', i === activeIdx);
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  };
+
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>
