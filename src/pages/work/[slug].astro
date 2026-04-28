@@ -1,0 +1,368 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionNumber from '../../components/SectionNumber.astro';
+import Reveals from '../../components/Reveals.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('work');
+  const sorted = entries.sort((a, b) => a.data.order - b.data.order);
+
+  return sorted.map((entry, i) => {
+    const prev = sorted[i - 1] ?? null;
+    const next = sorted[i + 1] ?? null;
+    return {
+      params: { slug: entry.id },
+      props: { entry, prev, next },
+    };
+  });
+}
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  prev: CollectionEntry<'work'> | null;
+  next: CollectionEntry<'work'> | null;
+}
+
+const { entry, prev, next } = Astro.props as Props;
+const d = entry.data;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: d.title,
+  creator: { '@type': 'Person', name: 'Federico de Servi' },
+  about: d.summary,
+  dateCreated: d.year,
+  client: d.client,
+};
+---
+
+<BaseLayout title={d.title} description={d.summary} jsonLd={jsonLd}>
+  <Reveals />
+
+  <article class="case">
+    <!-- Hero -->
+    <section class="section section--case-hero" aria-labelledby="case-h1">
+      <div class="section__inner grid">
+        <div class="case-hero__content">
+          <p class="t-mono case-hero__eyebrow" data-reveal>WORK / {d.number}</p>
+          <h1 id="case-h1" class="t-h1 case-hero__title" data-reveal>{d.title}</h1>
+
+          <dl class="meta-table case-hero__meta" data-reveal>
+            <div><dt>Client</dt><dd>{d.client}</dd></div>
+            <div><dt>Role</dt><dd>{d.role}</dd></div>
+            <div><dt>Year</dt><dd>{d.year}</dd></div>
+            <div><dt>Result</dt><dd>{d.result}</dd></div>
+            {d.links && d.links.length > 0 && (
+              <div>
+                <dt>Link</dt>
+                <dd>
+                  {d.links.map((l, i) => (
+                    <>
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" class="link-inline" data-cursor="link">{l.label}</a>
+                      {i < d.links!.length - 1 && <span class="meta-sep" aria-hidden="true"> · </span>}
+                    </>
+                  ))}
+                </dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 Context -->
+    <section class="section">
+      <div class="section__inner grid">
+        <SectionNumber number="01" label="Context" />
+        <div class="case-block">
+          <h2 class="t-h2" data-reveal>Context.</h2>
+          {d.context.map((p) => (
+            <p class="t-body-lg" data-reveal>{p}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 Approach -->
+    <section class="section">
+      <div class="section__inner grid">
+        <SectionNumber number="02" label="Approach" />
+        <div class="case-block">
+          <h2 class="t-h2" data-reveal>Approach.</h2>
+          <p class="t-body-lg" data-reveal>{d.approach.intro}</p>
+          <ul class="case-steps" data-reveal-group>
+            {d.approach.steps.map((s) => (
+              <li class="case-steps__item" data-reveal-item>
+                <p class="t-mono case-steps__num">{s.num}</p>
+                <p class="t-body">{s.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 Visual -->
+    <section class="section">
+      <div class="section__inner grid">
+        <SectionNumber number="03" label="Visual" />
+        <div class="case-block">
+          <h2 class="t-h2" data-reveal>Visual.</h2>
+          <div class="case-visual" data-reveal>
+            <div class="case-visual__placeholder" style={`--thumb-color: ${d.thumbColor};`}>
+              <span>{d.visualNote ?? 'visual · placeholder'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {d.detailNote && (
+      <!-- 04 Detail -->
+      <section class="section">
+        <div class="section__inner grid">
+          <SectionNumber number="04" label="Detail" />
+          <div class="case-block">
+            <h2 class="t-h2" data-reveal>Detail.</h2>
+            <div class="case-visual case-visual--small" data-reveal>
+              <div class="case-visual__placeholder" style={`--thumb-color: ${d.thumbColor};`}>
+                <span>{d.detailNote}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 05 Outcome -->
+    <section class="section">
+      <div class="section__inner grid">
+        <SectionNumber number="05" label="Outcome" />
+        <div class="case-block">
+          <h2 class="t-h2" data-reveal>Outcome.</h2>
+          <dl class="meta-table case-outcome" data-reveal>
+            {d.outcome.map((o) => (
+              <div><dt>{o.label}</dt><dd>{o.value}</dd></div>
+            ))}
+          </dl>
+          {d.closing && <p class="t-body-lg case-closing" data-reveal>{d.closing}</p>}
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 Next -->
+    <section class="section section--case-next">
+      <div class="section__inner grid">
+        <SectionNumber number="06" label="Next" />
+        <div class="case-block case-block--next">
+          <nav class="case-nav" aria-label="Case study navigation" data-reveal>
+            <div class="case-nav__col">
+              {prev ? (
+                <a href={`/work/${prev.id}`} class="case-nav__link" data-cursor="link">
+                  <span class="t-mono">← Prev</span>
+                  <span class="t-h3">{prev.data.title}</span>
+                </a>
+              ) : (
+                <span class="case-nav__placeholder t-mono">— Start —</span>
+              )}
+            </div>
+            <div class="case-nav__col case-nav__col--center">
+              <a href="/work" class="case-nav__link" data-cursor="link">
+                <span class="t-mono">Index</span>
+                <span class="t-h3">/work</span>
+              </a>
+            </div>
+            <div class="case-nav__col case-nav__col--right">
+              {next ? (
+                <a href={`/work/${next.id}`} class="case-nav__link" data-cursor="link">
+                  <span class="t-mono">Next →</span>
+                  <span class="t-h3">{next.data.title}</span>
+                </a>
+              ) : (
+                <span class="case-nav__placeholder t-mono">— End —</span>
+              )}
+            </div>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .section {
+    position: relative;
+    padding: 8rem 0;
+  }
+
+  .section--case-hero {
+    padding: 16rem 0 8rem;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+    position: relative;
+  }
+
+  .case-hero__content {
+    grid-column: 3 / -1;
+  }
+
+  .case-hero__eyebrow {
+    color: var(--brand-blue);
+    margin-bottom: 2.4rem;
+  }
+
+  .case-hero__title {
+    margin-bottom: 4.8rem;
+  }
+
+  .case-hero__meta {
+    max-width: 64rem;
+  }
+
+  .meta-table {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: 1px solid rgba(255, 253, 226, 0.18);
+  }
+
+  .meta-table > div {
+    display: grid;
+    grid-template-columns: 12rem 1fr;
+    gap: 1.6rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid rgba(255, 253, 226, 0.12);
+  }
+
+  .meta-table dt,
+  .meta-table dd {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  .meta-table dt {
+    color: var(--text-secondary);
+  }
+
+  .meta-sep {
+    margin: 0 0.4rem;
+    opacity: 0.5;
+  }
+
+  .case-block {
+    grid-column: 3 / -1;
+  }
+  @media (min-width: 1200px) {
+    .case-block { grid-column: 5 / span 9; }
+  }
+
+  .case-block > h2 {
+    margin-bottom: 4rem;
+  }
+
+  .case-block > p + p {
+    margin-top: 1.6rem;
+  }
+
+  .case-steps {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+  }
+  @media (min-width: 768px) {
+    .case-steps { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .case-steps__item {
+    border-top: 1px solid rgba(255, 253, 226, 0.18);
+    padding-top: 1.6rem;
+  }
+  .case-steps__num {
+    color: var(--brand-blue);
+    margin-bottom: 1.2rem;
+  }
+
+  .case-visual {
+    margin-top: 4rem;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+  .case-visual--small { aspect-ratio: 4 / 3; max-width: 80rem; }
+
+  .case-visual__placeholder {
+    height: 100%;
+    background: linear-gradient(135deg, var(--thumb-color, var(--brand-blue)) 0%, color-mix(in oklab, var(--thumb-color, var(--brand-blue)) 50%, #000) 100%);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: var(--brand-yellow);
+    letter-spacing: 0.04em;
+    opacity: 0.85;
+  }
+
+  .case-outcome {
+    max-width: 72rem;
+  }
+
+  .case-closing {
+    margin-top: 4rem;
+    font-family: var(--font-italic);
+    font-style: italic;
+    font-size: 2.4rem;
+    line-height: 1.2;
+    color: var(--brand-yellow);
+  }
+
+  /* Next nav */
+  .section--case-next {
+    border-top: 1px solid rgba(255, 253, 226, 0.18);
+    margin-top: 4rem;
+  }
+
+  .case-block--next { grid-column: 1 / -1; }
+
+  .case-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+  }
+  @media (min-width: 768px) {
+    .case-nav { grid-template-columns: 1fr 1fr 1fr; gap: 3.2rem; align-items: center; }
+  }
+
+  .case-nav__col--center { text-align: center; }
+  .case-nav__col--right { text-align: right; }
+
+  .case-nav__link {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: color var(--d-micro) var(--easeOutQuart);
+  }
+  .case-nav__link:hover { color: var(--brand-blue); }
+
+  .case-nav__placeholder { color: var(--text-disabled); }
+
+  .link-inline {
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.2rem;
+  }
+  .link-inline:hover { color: var(--brand-blue); }
+</style>

@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Reveals from '../components/Reveals.astro';
+---
+
+<BaseLayout
+  title="Contact"
+  description="Hai un progetto in mente? Parliamone. Scrivi a federico@federicodeservi.com — tempo di risposta 2-3 giorni lavorativi."
+>
+  <Reveals />
+
+  <section class="section section--contact-hero">
+    <div class="section__inner grid">
+      <div class="contact-hero">
+        <p class="t-mono contact-hero__eyebrow" data-reveal>CONTACT</p>
+        <h1 class="t-h1" data-reveal>Hai un progetto<br />in mente?<br /><span class="t-italic">Parliamone.</span></h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__inner grid">
+      <div class="contact-block">
+        <form class="contact-form" id="contactForm" data-reveal-group>
+          <div class="contact-form__row" data-reveal-item>
+            <label for="name" class="t-mono contact-form__label">01 — Come ti chiami?</label>
+            <input id="name" name="name" type="text" required autocomplete="name" />
+          </div>
+          <div class="contact-form__row" data-reveal-item>
+            <label for="email" class="t-mono contact-form__label">02 — La tua email</label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </div>
+          <div class="contact-form__row" data-reveal-item>
+            <label for="topic" class="t-mono contact-form__label">03 — Di cosa si tratta?</label>
+            <select id="topic" name="topic" required>
+              <option value="" disabled selected>Scegli</option>
+              <option value="Sito">Sito</option>
+              <option value="App">App</option>
+              <option value="Brand">Brand</option>
+              <option value="Libro">Libro</option>
+              <option value="Altro">Altro</option>
+            </select>
+          </div>
+          <div class="contact-form__row" data-reveal-item>
+            <label for="message" class="t-mono contact-form__label">04 — Raccontami</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+          </div>
+          <div class="contact-form__row contact-form__row--cta" data-reveal-item>
+            <button type="submit" class="btn" data-cursor="link">Manda <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--contact-direct">
+    <div class="section__inner grid">
+      <div class="contact-block">
+        <p class="t-mono contact-direct__eyebrow" data-reveal>Oppure scrivi direttamente</p>
+        <p data-reveal>
+          <a href="mailto:federico@federicodeservi.com" class="contact-direct__email t-h3" data-cursor="link">
+            federico@federicodeservi.com ↗
+          </a>
+        </p>
+        <p class="contact-direct__note t-mono" data-reveal>
+          Tempo di risposta tipico: 2-3 giorni lavorativi.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section { padding: 8rem 0; position: relative; }
+  .section--contact-hero { padding: 16rem 0 4rem; min-height: 60vh; display: flex; align-items: center; }
+  .section--contact-direct { padding-bottom: 12rem; }
+
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+  }
+
+  .contact-hero { grid-column: 3 / -1; }
+  .contact-hero__eyebrow { color: var(--brand-blue); margin-bottom: 2.4rem; }
+
+  .contact-block { grid-column: 3 / -1; }
+  @media (min-width: 1200px) { .contact-block { grid-column: 5 / span 9; } }
+
+  .contact-form {
+    display: grid;
+    gap: 3.2rem;
+  }
+
+  .contact-form__row {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .contact-form__label {
+    color: var(--brand-blue);
+  }
+
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 253, 226, 0.4);
+    padding: 1.2rem 0;
+    font-family: var(--font-body);
+    font-size: 1.8rem;
+    color: var(--brand-yellow);
+    transition: border-color var(--d-micro) var(--easeOutQuart);
+    border-radius: 0;
+  }
+
+  .contact-form input:focus,
+  .contact-form select:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-bottom-color: var(--brand-blue);
+  }
+
+  .contact-form select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--brand-yellow) 50%),
+                      linear-gradient(135deg, var(--brand-yellow) 50%, transparent 50%);
+    background-position: calc(100% - 14px) 50%, calc(100% - 8px) 50%;
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 2.4rem;
+  }
+
+  .contact-form select option {
+    background: var(--brand-dark-blue);
+    color: var(--brand-yellow);
+  }
+
+  .contact-form textarea {
+    resize: vertical;
+    min-height: 12rem;
+  }
+
+  .contact-form__row--cta { margin-top: 1.6rem; }
+
+  .contact-direct__eyebrow { color: var(--text-secondary); margin-bottom: 1.6rem; }
+  .contact-direct__email {
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.4rem;
+    transition: color var(--d-micro) var(--easeOutQuart);
+  }
+  .contact-direct__email:hover { color: var(--brand-blue); }
+  .contact-direct__note {
+    margin-top: 4rem;
+    color: var(--text-secondary);
+  }
+</style>
+
+<script>
+  const setup = () => {
+    const form = document.getElementById('contactForm') as HTMLFormElement | null;
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const name = String(data.get('name') ?? '').trim();
+      const email = String(data.get('email') ?? '').trim();
+      const topic = String(data.get('topic') ?? '').trim();
+      const message = String(data.get('message') ?? '').trim();
+
+      const subject = `[${topic}] Progetto da ${name}`;
+      const body = [
+        `Ciao Federico,`,
+        ``,
+        `${message}`,
+        ``,
+        `—`,
+        `${name} (${email})`,
+      ].join('\n');
+
+      const href = `mailto:federico@federicodeservi.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = href;
+    });
+  };
+
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>

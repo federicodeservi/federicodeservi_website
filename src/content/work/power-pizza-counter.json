@@ -1,0 +1,48 @@
+{
+  "order": 1,
+  "number": "01",
+  "title": "Power Pizza Counter",
+  "summary": "Un'app per contare le pizze del podcast.",
+  "client": "Power Pizza Podcast",
+  "role": "Product design + Flutter dev",
+  "year": "2024",
+  "result": "5.000+ download · 500+ ★★★★★ · 4.8/5",
+  "thumbColor": "#f4c81e",
+  "thumbRatio": "16 / 10",
+  "services": "Design · Flutter · UI",
+  "links": [
+    { "label": "App Store ↗", "href": "https://apps.apple.com" },
+    { "label": "Play Store ↗", "href": "https://play.google.com" }
+  ],
+  "context": [
+    "Power Pizza è uno dei podcast italiani più seguiti — videogiochi, fumetti, e (loro lo sanno) un'ossessione collettiva per le pizze ordinate in studio.",
+    "I fan tengono il conto da anni. Mi hanno chiesto un'app per farlo bene."
+  ],
+  "approach": {
+    "intro": "Una sola schermata, un solo gesto. Niente onboarding, niente account, niente notifiche.",
+    "steps": [
+      {
+        "num": "02.1",
+        "text": "Design fedele al tono del podcast (giallo Power Pizza, type bold, micro-copy ironico)"
+      },
+      {
+        "num": "02.2",
+        "text": "Flutter cross-platform, single codebase iOS+Android, deploy in 6 settimane"
+      },
+      {
+        "num": "02.3",
+        "text": "Counter persistente locale, zero backend, zero costi di gestione"
+      }
+    ]
+  },
+  "visualNote": "Screenshot/mockup app · placeholder",
+  "detailNote": "Animazione spring del counter · placeholder",
+  "outcome": [
+    { "label": "Download", "value": "5.000+" },
+    { "label": "Recensioni", "value": "500+" },
+    { "label": "Rating", "value": "★★★★★ 4.8/5" },
+    { "label": "Tempo build", "value": "6 settimane (Flutter)" },
+    { "label": "Costo runtime", "value": "Zero (no backend)" }
+  ],
+  "closing": "Le pizze contano davvero, adesso anche letteralmente."
+}

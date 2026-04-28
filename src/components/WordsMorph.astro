@@ -1,0 +1,115 @@
+---
+// 3D rotateX flip cycling through words in place. Wrapper width sized
+// to the longest word to avoid layout shift.
+export interface Props {
+  words: string[];
+  italicIdx?: number[]; // indices to render in Instrument Serif italic
+}
+const { words, italicIdx = [] } = Astro.props;
+---
+
+<span class="words-3d" data-words-morph>
+  <span class="words-3d__measure" aria-hidden="true">
+    {words.map((w) => <span>{w}</span>)}
+  </span>
+  <span class="words-3d__inner">
+    {words.map((w, i) => (
+      <span class={`words-3d__word${italicIdx.includes(i) ? ' words-3d__word--italic' : ''}`}>{w}</span>
+    ))}
+  </span>
+</span>
+
+<style>
+  .words-3d {
+    perspective: 1000px;
+    display: inline-block;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  .words-3d__measure {
+    visibility: hidden;
+    pointer-events: none;
+    display: inline-block;
+    position: relative;
+  }
+
+  .words-3d__measure span {
+    display: block;
+    line-height: inherit;
+    white-space: nowrap;
+  }
+
+  /* The first measure span sits in normal flow to size the wrapper width;
+     subsequent ones stack to ensure max-width detection. */
+  .words-3d__measure span + span {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .words-3d__inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+
+  .words-3d__word {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    backface-visibility: hidden;
+    color: var(--brand-blue);
+    will-change: transform, opacity;
+  }
+
+  .words-3d__word--italic {
+    font-family: var(--font-italic);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { reducedMotion } from '../lib/motion';
+
+  const setup = () => {
+    const wrappers = document.querySelectorAll<HTMLElement>('[data-words-morph]');
+    wrappers.forEach((wrap) => {
+      const words = Array.from(wrap.querySelectorAll<HTMLElement>('.words-3d__word'));
+      if (!words.length) return;
+
+      // initial state: only first word visible
+      gsap.set(words, { rotateX: 90, opacity: 0 });
+      gsap.set(words[0]!, { rotateX: 0, opacity: 1 });
+
+      if (reducedMotion()) {
+        // simple fade cycle, no 3D
+        gsap.set(words, { rotateX: 0 });
+        let i = 0;
+        setInterval(() => {
+          gsap.to(words[i]!, { opacity: 0, duration: 0.2 });
+          i = (i + 1) % words.length;
+          gsap.to(words[i]!, { opacity: 1, duration: 0.2 });
+        }, 2800);
+        return;
+      }
+
+      const tl = gsap.timeline({ repeat: -1, defaults: { ease: 'power2.inOut' } });
+      words.forEach((word, i) => {
+        const next = words[(i + 1) % words.length]!;
+        tl.to({}, { duration: 2.0 })
+          .set(next, { rotateX: 90, opacity: 0 })
+          .to(word, { rotateX: -90, opacity: 0, duration: 0.5 })
+          .to(next, { rotateX: 0, opacity: 1, duration: 0.5 }, '<');
+      });
+    });
+  };
+
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>

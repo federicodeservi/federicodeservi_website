@@ -1,0 +1,173 @@
+---
+// Replica fromanother loader: clip-path mask, percentage counter,
+// rotating sub-text. Shown only on first visit (sessionStorage flag).
+---
+
+<div class="page-loader" data-page-loader>
+  <div class="page-loader__hello">Hello, sono Federico</div>
+  <div class="page-loader__sub-text" data-loader-sub></div>
+  <div class="page-loader__percentage"><p data-loader-percent>0%</p></div>
+  <div class="page-loader__progress">
+    <div class="page-loader__progress-bar" data-loader-bar></div>
+  </div>
+</div>
+
+<style>
+  .page-loader {
+    --page-loader-mask-height: 0%;
+    position: fixed;
+    inset: 0;
+    z-index: 10000000;
+    background: var(--brand-yellow);
+    clip-path: inset(0 0 var(--page-loader-mask-height) 0);
+    will-change: clip-path;
+    pointer-events: none;
+  }
+
+  .page-loader.is-active { pointer-events: all; }
+  .page-loader.is-hidden { display: none; }
+
+  .page-loader__hello {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--brand-dark-blue);
+    font-family: var(--font-body);
+    font-size: 3.2rem;
+    line-height: 1em;
+    letter-spacing: -0.096rem;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .page-loader__sub-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 36rem;
+    color: var(--brand-dark-blue);
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    letter-spacing: -0.028rem;
+    text-transform: uppercase;
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+
+  .page-loader__percentage {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 31.3rem;
+    color: var(--brand-dark-blue);
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    letter-spacing: -0.028rem;
+  }
+
+  .page-loader__percentage p { margin: 0; }
+
+  .page-loader__progress {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 26.6rem;
+    width: 24rem;
+    height: 1px;
+    background: rgba(5, 18, 54, 0.15);
+    overflow: hidden;
+  }
+
+  .page-loader__progress-bar {
+    --progress: 0;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(var(--progress));
+    transform-origin: left center;
+    background: var(--brand-dark-blue);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { reducedMotion } from '../lib/motion';
+
+  const SUB_TEXTS = [
+    'preparando la palette colori',
+    'calibrando il cursore',
+    'scaldando i font',
+    'caricando i progetti',
+    'intercettando le pizze',
+  ];
+
+  const SESSION_KEY = 'fds-loader-shown';
+
+  const run = () => {
+    const loader = document.querySelector<HTMLElement>('[data-page-loader]');
+    if (!loader) return;
+
+    const alreadyShown = sessionStorage.getItem(SESSION_KEY) === '1';
+
+    if (alreadyShown) {
+      loader.classList.add('is-hidden');
+      return;
+    }
+
+    sessionStorage.setItem(SESSION_KEY, '1');
+    loader.classList.add('is-active');
+
+    if (reducedMotion()) {
+      gsap.to(loader, {
+        opacity: 0,
+        duration: 0.2,
+        delay: 0.2,
+        onComplete: () => loader.classList.add('is-hidden'),
+      });
+      return;
+    }
+
+    const sub = loader.querySelector<HTMLElement>('[data-loader-sub]');
+    const percent = loader.querySelector<HTMLElement>('[data-loader-percent]');
+    const bar = loader.querySelector<HTMLElement>('[data-loader-bar]');
+    if (!sub || !percent || !bar) return;
+
+    const TOTAL = 2100; // ms — within 1.8–2.4s window
+    const SUB_INTERVAL = 400;
+
+    let subIdx = 0;
+    sub.textContent = SUB_TEXTS[0]!;
+    const subTimer = setInterval(() => {
+      subIdx = (subIdx + 1) % SUB_TEXTS.length;
+      sub.textContent = SUB_TEXTS[subIdx]!;
+    }, SUB_INTERVAL);
+
+    const counter = { v: 0 };
+    gsap.to(counter, {
+      v: 100,
+      duration: TOTAL / 1000,
+      ease: 'none',
+      onUpdate: () => {
+        const v = Math.round(counter.v);
+        percent.textContent = `${v}%`;
+        bar.style.setProperty('--progress', String(v / 100));
+      },
+      onComplete: () => {
+        clearInterval(subTimer);
+        gsap.to(loader, {
+          '--page-loader-mask-height': '100%',
+          duration: 0.8,
+          ease: 'cubic-bezier(0.76, 0, 0.24, 1)',
+          onComplete: () => loader.classList.add('is-hidden'),
+        });
+      },
+    });
+  };
+
+  // Run on first load only (loader is hidden across nav by sessionStorage flag).
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+</script>

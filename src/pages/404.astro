@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Reveals from '../components/Reveals.astro';
+---
+
+<BaseLayout title="404 — Pagina non trovata" description="La pagina che cerchi non esiste, o è stata spostata.">
+  <Reveals />
+
+  <section class="section section--404">
+    <div class="section__inner grid">
+      <div class="not-found">
+        <p class="t-mono not-found__eyebrow" data-reveal>404</p>
+        <h1 class="t-h1" data-reveal>Questa pagina<br /><span class="t-italic">non esiste.</span></h1>
+        <p class="t-body-lg" data-reveal>
+          Probabilmente è stata spostata, oppure il link era già un po' sbagliato di partenza.
+        </p>
+        <p class="not-found__cta" data-reveal>
+          <a href="/" class="btn" data-cursor="link">Torna alla home <span aria-hidden="true">→</span></a>
+        </p>
+        <p class="not-found__or t-mono" data-reveal>
+          oppure:{' '}
+          <a href="/work" class="link-inline" data-cursor="link">/work</a>
+          {' · '}
+          <a href="/about" class="link-inline" data-cursor="link">/about</a>
+          {' · '}
+          <a href="/contact" class="link-inline" data-cursor="link">/contact</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section--404 {
+    min-height: 80vh;
+    padding: 16rem 0 8rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+  }
+
+  .not-found {
+    grid-column: 3 / -1;
+  }
+
+  .not-found__eyebrow { color: var(--brand-blue); margin-bottom: 2.4rem; }
+
+  .not-found h1 { margin-bottom: 3.2rem; }
+  .not-found__cta { margin-top: 4rem; }
+  .not-found__or {
+    margin-top: 3.2rem;
+    color: var(--text-secondary);
+  }
+
+  .link-inline {
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+  }
+  .link-inline:hover { color: var(--brand-blue); }
+</style>

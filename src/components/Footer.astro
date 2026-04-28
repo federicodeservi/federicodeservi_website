@@ -1,0 +1,116 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__col footer__col--name">
+      <p class="footer__name">Federico de Servi</p>
+      <p class="footer__role">Designer + brand-builder + flutter-dev</p>
+      <p class="footer__city">Milano, IT</p>
+    </div>
+
+    <div class="footer__col footer__col--contact">
+      <a href="mailto:federico@federicodeservi.com" class="footer__email">federico@federicodeservi.com</a>
+      <ul class="footer__socials">
+        <li><a href="https://www.linkedin.com/in/federicodeservi" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+        <li><a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer">Behance ↗</a></li>
+        <li><a href="https://www.instagram.com/federicodeservi" target="_blank" rel="noopener noreferrer">Instagram ↗</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col footer__col--nav">
+      <ul class="footer__nav">
+        <li><a href="/work">Work</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col footer__col--credits">
+      <p>© {currentYear} · Made in Milano</p>
+      <p>Switzer + Instrument Serif</p>
+      <p>Built with Astro</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 8rem var(--padding-x) 4rem;
+    border-top: 1px solid rgba(255, 253, 226, 0.12);
+    margin-top: 12rem;
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+
+  @media (min-width: 768px) {
+    .footer__inner {
+      grid-template-columns: 1.2fr 1fr 0.6fr 1fr;
+      gap: 3.2rem;
+    }
+  }
+
+  .footer__col p,
+  .footer__col li {
+    font-family: var(--font-body);
+    font-size: 1.4rem;
+    line-height: 1.6em;
+    color: var(--text-secondary);
+  }
+
+  .footer__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 2.4rem !important;
+    line-height: 1em !important;
+    color: var(--brand-yellow) !important;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+
+  .footer__email {
+    display: inline-block;
+    color: var(--brand-yellow);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.2rem;
+    margin-bottom: 1.6rem;
+    font-size: 1.6rem;
+  }
+
+  .footer__socials,
+  .footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .footer__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+  }
+
+  .footer__socials a,
+  .footer__nav a {
+    color: var(--brand-yellow);
+    transition: color var(--d-micro) var(--easeOutQuart);
+  }
+
+  .footer__socials a:hover,
+  .footer__nav a:hover {
+    color: var(--brand-blue);
+  }
+
+  .footer__credits p {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+</style>

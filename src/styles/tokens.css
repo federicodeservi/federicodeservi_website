@@ -1,0 +1,77 @@
+/* Design tokens — extracted verbatim from fromanother.love
+   In case of conflict with other files: this wins. */
+
+:root {
+  /* Palette */
+  --brand-yellow: #fffde2;
+  --brand-dark-blue: #051236;
+  --brand-blue: #1740a9;
+  --text-secondary: rgba(255, 253, 226, 0.6);
+  --text-disabled: rgba(255, 253, 226, 0.3);
+
+  /* Easing */
+  --easeOutQuart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --easeInOutQuart: cubic-bezier(0.76, 0, 0.24, 1);
+  --easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Durations */
+  --d-micro: 0.2s;
+  --d-hover: 0.4s;
+  --d-reveal: 0.8s;
+  --d-page: 1.2s;
+
+  /* Fonts — Onest Variable as free Switzer/Lausanne analogue.
+     See spec §13: Switzer was the original target, Onest is the closest
+     variable Fontsource match with matching x-height + geometry. */
+  --font-body: "Onest Variable", system-ui, sans-serif;
+  --font-display: "Onest Variable", system-ui, sans-serif;
+  --font-italic: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  /* Layout */
+  --gap-x: 1.6rem;
+  --padding-x: 1.6rem;
+  --columns: 6;
+
+  /* Radii */
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-pill: 999px;
+}
+
+/* Fluid root font-size — the fromanother way */
+html {
+  font-size: max(2.6666666667vw, 1px);
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: max(1.3020833333vw, 1px);
+  }
+  :root {
+    --gap-x: 3.2rem;
+    --padding-x: 3.2rem;
+    --columns: 8;
+  }
+}
+
+@media (min-width: 1200px) {
+  html {
+    font-size: max(0.5208333333vw, 1px);
+  }
+  :root {
+    --gap-x: 2.4rem;
+    --padding-x: 4.8rem;
+    --columns: 14;
+  }
+}
+
+/* Inverted section (yellow bg, dark ink) */
+.section--invert {
+  background-color: var(--brand-yellow);
+  color: var(--brand-dark-blue);
+}
+
+.section--invert a {
+  color: var(--brand-dark-blue);
+}

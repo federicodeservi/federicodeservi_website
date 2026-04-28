@@ -1,0 +1,55 @@
+---
+// Global scroll-reveal binder. Looks for [data-reveal] and [data-reveal-group].
+---
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { reducedMotion } from '../lib/motion';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const setup = () => {
+    if (reducedMotion()) {
+      document.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-item]').forEach((el) => {
+        gsap.set(el, { opacity: 1, y: 0 });
+      });
+      return;
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+      gsap.from(el, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      });
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach((group) => {
+      const items = group.querySelectorAll<HTMLElement>('[data-reveal-item]');
+      if (!items.length) return;
+      gsap.from(items, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.1,
+        scrollTrigger: { trigger: group, start: 'top 80%', once: true },
+      });
+    });
+
+    ScrollTrigger.refresh();
+  };
+
+  // Slight delay so loader/curtain settle before triggers compute.
+  const delayed = () => setTimeout(setup, 50);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', delayed);
+  } else {
+    delayed();
+  }
+  document.addEventListener('astro:after-swap', delayed);
+</script>

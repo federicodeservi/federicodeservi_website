@@ -1,0 +1,44 @@
+{
+  "order": 2,
+  "number": "02",
+  "title": "Finalmente Gluten-free!",
+  "summary": "Identità + design del libro per il primo manuale gluten-free di Dany Resconi.",
+  "client": "Daniele Resconi",
+  "role": "Identità visiva + design editoriale + project management",
+  "year": "2023",
+  "result": "Pubblicato · ottime vendite · lettori soddisfatti",
+  "thumbColor": "#a4d65e",
+  "thumbRatio": "3 / 4",
+  "services": "Branding · Editorial · Libro",
+  "links": [],
+  "context": [
+    "Dany Resconi è un creator italiano che parla di alimentazione gluten-free a chi non ha tempo di studiare etichette.",
+    "Voleva il suo primo libro: un manuale concreto, non l'ennesima guida medica."
+  ],
+  "approach": {
+    "intro": "Identità del libro come oggetto + interfacciamento con l'editore.",
+    "steps": [
+      {
+        "num": "02.1",
+        "text": "Identità visiva del libro coerente con il brand del creator"
+      },
+      {
+        "num": "02.2",
+        "text": "Design editoriale interno (gerarchia, ricette, illustrazioni)"
+      },
+      {
+        "num": "02.3",
+        "text": "Project management con editore (revisioni, stampa, copertina)"
+      }
+    ]
+  },
+  "visualNote": "Foto libro fisico · placeholder",
+  "detailNote": "Tipografia interna o sistema icone ricette · placeholder",
+  "outcome": [
+    { "label": "Pubblicazione", "value": "2023" },
+    { "label": "Vendite", "value": "Ottime" },
+    { "label": "Recensioni", "value": "Lettori soddisfatti" },
+    { "label": "Ruolo", "value": "End-to-end: identità → design → produzione" }
+  ],
+  "closing": "Un libro che la gente apre, non solo compra."
+}

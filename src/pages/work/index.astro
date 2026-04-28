@@ -1,0 +1,190 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CaseThumb from '../../components/CaseThumb.astro';
+import Reveals from '../../components/Reveals.astro';
+
+const entries = await getCollection('work');
+const sorted = entries.sort((a, b) => a.data.order - b.data.order);
+
+const otherWork = [
+  { title: 'Smart Roadways', href: 'https://www.behance.net/federicodeservi' },
+  { title: 'Klimu Spaceships', href: 'https://www.behance.net/federicodeservi' },
+  { title: 'Notami', href: 'https://www.behance.net/federicodeservi' },
+  { title: 'InBuoneMani', href: 'https://www.behance.net/federicodeservi' },
+];
+---
+
+<BaseLayout
+  title="Work"
+  description="Selected work, 2023–2025. Tre progetti dettagliati: Power Pizza Counter, Finalmente Gluten-free!, Dany Resconi Website."
+>
+  <Reveals />
+
+  <section class="section section--work-hero">
+    <div class="section__inner grid">
+      <div class="work-hero">
+        <p class="t-mono work-hero__eyebrow" data-reveal>WORK / index</p>
+        <h1 class="t-h1" data-reveal>Selected work,<br /><span class="t-italic">2023–2025</span>.</h1>
+        <ul class="work-hero__bullets" data-reveal-group>
+          <li data-reveal-item>3 progetti dettagliati qui sotto</li>
+          <li data-reveal-item>Altri lavori minori in fondo</li>
+          <li data-reveal-item>Archive completo su Behance ↗</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--work-list">
+    <div class="section__inner grid">
+      <div class="work-list">
+        {sorted.map((entry) => (
+          <article class="work-list__item" data-reveal-group>
+            <div class="work-list__thumb" data-reveal-item>
+              <CaseThumb
+                href={`/work/${entry.id}`}
+                title={entry.data.title}
+                imageColor={entry.data.thumbColor}
+                ratio={entry.data.thumbRatio}
+              >
+                <span slot="services">{entry.data.services}</span>
+              </CaseThumb>
+            </div>
+            <div class="work-list__meta" data-reveal-item>
+              <p class="t-mono work-list__num">{entry.data.number}</p>
+              <h2 class="t-h2 work-list__title">
+                <a href={`/work/${entry.id}`} data-cursor="link">{entry.data.title}</a>
+              </h2>
+              <p class="t-mono work-list__caption">
+                {entry.data.client} · {entry.data.year} · {entry.data.role}
+              </p>
+              <p class="t-body-lg work-list__result">{entry.data.result}</p>
+              <a href={`/work/${entry.id}`} class="link-inline" data-cursor="link">→ apri progetto</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--other">
+    <div class="section__inner grid">
+      <div class="other">
+        <h2 class="t-h3" data-reveal>Other selected work</h2>
+        <ul class="other__grid" data-reveal-group>
+          {otherWork.map((w) => (
+            <li class="other__item" data-reveal-item>
+              <a href={w.href} target="_blank" rel="noopener noreferrer" class="other__link" data-cursor="link">
+                <span class="t-h3 other__title">{w.title}</span>
+                <span class="t-mono other__link-label">link Behance ↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <p class="other__archive" data-reveal>
+          Archive completo:{' '}
+          <a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer" class="link-inline" data-cursor="link">
+            behance.net/federicodeservi ↗
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section { padding: 8rem 0; position: relative; }
+  .section--work-hero { padding: 16rem 0 4rem; }
+
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+  }
+
+  .work-hero {
+    grid-column: 3 / -1;
+  }
+
+  .work-hero__eyebrow { color: var(--brand-blue); margin-bottom: 2.4rem; }
+
+  .work-hero__bullets {
+    margin-top: 4rem;
+    color: var(--text-secondary);
+  }
+  .work-hero__bullets li {
+    font-size: 1.6rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255, 253, 226, 0.08);
+  }
+
+  .work-list { grid-column: 1 / -1; }
+
+  .work-list__item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+    padding: 6rem 0;
+    border-top: 1px solid rgba(255, 253, 226, 0.12);
+  }
+
+  @media (min-width: 768px) {
+    .work-list__item {
+      grid-template-columns: 1fr 1fr;
+      gap: 4.8rem;
+      align-items: center;
+    }
+  }
+
+  .work-list__num { color: var(--brand-blue); margin-bottom: 1.2rem; }
+  .work-list__title { margin-bottom: 1.2rem; }
+  .work-list__title a {
+    transition: color var(--d-micro) var(--easeOutQuart);
+  }
+  .work-list__title a:hover { color: var(--brand-blue); }
+  .work-list__caption { color: var(--text-secondary); margin-bottom: 1.6rem; }
+  .work-list__result { margin-bottom: 2.4rem; max-width: 50ch; }
+
+  .other { grid-column: 3 / -1; }
+  .other > h2 { margin-bottom: 3.2rem; }
+
+  .other__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  @media (min-width: 768px) {
+    .other__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .other__item {
+    border-top: 1px solid rgba(255, 253, 226, 0.12);
+  }
+
+  .other__link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding: 2.4rem 0;
+    transition: color var(--d-micro) var(--easeOutQuart);
+  }
+  .other__link:hover { color: var(--brand-blue); }
+
+  .other__link-label { color: var(--text-secondary); white-space: nowrap; }
+
+  .other__archive {
+    margin-top: 4.8rem;
+    padding-top: 2.4rem;
+    border-top: 1px solid rgba(255, 253, 226, 0.12);
+    color: var(--text-secondary);
+  }
+
+  .link-inline {
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.2rem;
+  }
+  .link-inline:hover { color: var(--brand-blue); }
+</style>

@@ -1,0 +1,56 @@
+---
+// Curtain page-transition overlay driven by Astro's view-transition events.
+---
+
+<div class="curtain" aria-hidden="true"></div>
+
+<style>
+  .curtain {
+    --curtain-height: 0%;
+    position: fixed;
+    inset: 0;
+    background: var(--brand-yellow);
+    clip-path: inset(0 0 calc(100% - var(--curtain-height)) 0);
+    z-index: 99999;
+    pointer-events: none;
+    will-change: clip-path;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { reducedMotion } from '../lib/motion';
+
+  document.addEventListener('astro:before-preparation', (e) => {
+    const ev = e as Event & { loader: () => Promise<unknown> };
+    const curtain = document.querySelector<HTMLElement>('.curtain');
+    if (!curtain || reducedMotion()) return;
+    const originalLoader = ev.loader;
+    ev.loader = async () =>
+      new Promise((resolve) => {
+        gsap.to(curtain, {
+          '--curtain-height': '100%',
+          duration: 0.4,
+          ease: 'cubic-bezier(0.76, 0, 0.24, 1)',
+          onComplete: () => {
+            originalLoader().then(resolve);
+          },
+        });
+      });
+  });
+
+  document.addEventListener('astro:after-swap', () => {
+    const curtain = document.querySelector<HTMLElement>('.curtain');
+    if (!curtain) return;
+    if (reducedMotion()) {
+      curtain.style.setProperty('--curtain-height', '0%');
+      return;
+    }
+    gsap.set(curtain, { '--curtain-height': '100%' });
+    gsap.to(curtain, {
+      '--curtain-height': '0%',
+      duration: 0.4,
+      ease: 'cubic-bezier(0.76, 0, 0.24, 1)',
+    });
+  });
+</script>

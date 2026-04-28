@@ -1,0 +1,80 @@
+---
+import '@fontsource-variable/onest';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+import SmoothScroll from '../components/SmoothScroll.astro';
+import Cursor from '../components/Cursor.astro';
+import PageLoader from '../components/PageLoader.astro';
+import Curtain from '../components/Curtain.astro';
+import Footer from '../components/Footer.astro';
+import { ClientRouter } from 'astro:transitions';
+
+export interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  hideFooter?: boolean;
+}
+
+const {
+  title,
+  description = 'Federico de Servi — designer, brand-builder, flutter-dev. Lavoro con content creator italiani da Milano.',
+  ogImage = '/og-default.png',
+  jsonLd,
+  hideFooter = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const fullTitle = title === 'Federico de Servi' ? title : `${title} · Federico de Servi`;
+---
+
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta property="og:locale" content="it_IT" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
+
+    <meta name="theme-color" content="#051236" />
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+
+    <ClientRouter />
+  </head>
+  <body>
+    <PageLoader />
+    <Curtain />
+    <Cursor />
+    <SmoothScroll />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    {!hideFooter && <Footer />}
+  </body>
+</html>

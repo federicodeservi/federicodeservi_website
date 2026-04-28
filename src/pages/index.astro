@@ -1,0 +1,496 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionNumber from '../components/SectionNumber.astro';
+import WordsMorph from '../components/WordsMorph.astro';
+import Marquee from '../components/Marquee.astro';
+import CaseThumb from '../components/CaseThumb.astro';
+import Reveals from '../components/Reveals.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Federico de Servi',
+  jobTitle: 'Designer, Brand-builder, Flutter Developer',
+  url: 'https://federicodeservi.com',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Milano',
+    addressCountry: 'IT',
+  },
+  email: 'federico@federicodeservi.com',
+};
+
+const heroWords = ['designer', 'brand-builder', 'flutter-dev', 'editor', 'fan dei podcast italiani'];
+---
+
+<BaseLayout
+  title="Federico de Servi"
+  description="Designer, brand-builder e flutter-dev a Milano. Lavoro con content creator italiani su siti, app e identità visive."
+  jsonLd={jsonLd}
+>
+  <Reveals />
+
+  <!-- 01 — Hero -->
+  <section class="section section--hero" aria-labelledby="hero-h1">
+    <div class="section__inner grid">
+      <SectionNumber number="01" label="Hero" />
+
+      <div class="hero__content">
+        <p class="hero__eyebrow t-mono" data-reveal>Federico de Servi · Milano</p>
+        <h1 id="hero-h1" class="hero__h1 t-h1" data-reveal>
+          Sono un <WordsMorph words={heroWords} italicIdx={[3, 4]} /><br />
+          per content creator<br />italiani.
+        </h1>
+        <p class="hero__sub t-body-lg" data-reveal>
+          Lavoro da Milano, principalmente in remoto.
+        </p>
+        <p class="hero__cta-wrap" data-reveal>
+          <a href="/contact" class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — What I do -->
+  <section class="section section--what">
+    <div class="section__inner grid">
+      <SectionNumber number="02" label="What I do" />
+
+      <div class="what__content">
+        <h2 class="t-h2" data-reveal>Tre cose,<br />fatte spesso<br />insieme.</h2>
+
+        <div class="what__cols" data-reveal-group>
+          <article class="what__col" data-reveal-item>
+            <p class="t-mono what__num">02.1 — Design</p>
+            <p class="t-body-lg what__lead">Siti, app, identità visive per chi vuole un prodotto che si distingue.</p>
+            <ul class="what__list">
+              <li>Web design</li>
+              <li>UI/UX</li>
+              <li>Prototyping</li>
+            </ul>
+          </article>
+          <article class="what__col" data-reveal-item>
+            <p class="t-mono what__num">02.2 — Brand</p>
+            <p class="t-body-lg what__lead">Identità per chi parla a un pubblico — voce, sistema, applicazioni.</p>
+            <ul class="what__list">
+              <li>Brand identity</li>
+              <li>Editorial / libri</li>
+              <li>Visual systems</li>
+            </ul>
+          </article>
+          <article class="what__col" data-reveal-item>
+            <p class="t-mono what__num">02.3 — Sviluppo</p>
+            <p class="t-body-lg what__lead">Quando il design ha bisogno di esistere davvero. Flutter per app mobile, codice quando serve.</p>
+            <ul class="what__list">
+              <li>App mobile (Flutter)</li>
+              <li>Squarespace dev</li>
+              <li>Custom web (light)</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — Selected work -->
+  <section class="section section--work">
+    <div class="section__inner grid">
+      <SectionNumber number="03" label="Selected work" />
+
+      <div class="work__content">
+        <h2 class="t-h2" data-reveal>Selected work,<br /><span class="t-italic">2023–2025</span>.</h2>
+
+        <div class="work__list">
+          <!-- Card 1: Power Pizza Counter (thumb left, metadata right) -->
+          <article class="work-card work-card--left" data-reveal-group>
+            <div class="work-card__thumb" data-reveal-item>
+              <CaseThumb
+                href="/work/power-pizza-counter"
+                title="Power Pizza Counter"
+                imageColor="#f4c81e"
+                ratio="16 / 10"
+              >
+                <span slot="services">Design · Flutter · UI</span>
+              </CaseThumb>
+            </div>
+            <div class="work-card__meta" data-reveal-item>
+              <dl class="meta-table">
+                <div><dt>Client</dt><dd>Power Pizza</dd></div>
+                <div><dt>Role</dt><dd>Design + Flutter</dd></div>
+                <div><dt>Year</dt><dd>2024</dd></div>
+                <div><dt>Result</dt><dd>5k+ download · 500+ ★★★★★</dd></div>
+              </dl>
+              <h3 class="t-h3 work-card__title">Power Pizza Counter</h3>
+              <p class="t-body-lg work-card__desc">Un'app per contare le pizze del podcast.</p>
+              <a class="link-inline" href="/work/power-pizza-counter" data-cursor="link">→ apri progetto</a>
+            </div>
+          </article>
+
+          <!-- Card 2: Libro (thumb right, metadata left) -->
+          <article class="work-card work-card--right" data-reveal-group>
+            <div class="work-card__meta" data-reveal-item>
+              <dl class="meta-table">
+                <div><dt>Client</dt><dd>Daniele Resconi</dd></div>
+                <div><dt>Role</dt><dd>Identità + design editoriale</dd></div>
+                <div><dt>Year</dt><dd>2023</dd></div>
+                <div><dt>Result</dt><dd>Pubblicato · ottime vendite</dd></div>
+              </dl>
+              <h3 class="t-h3 work-card__title">Finalmente Gluten-free!</h3>
+              <p class="t-body-lg work-card__desc">Identità + design del libro per il primo manuale gluten-free di Dany Resconi.</p>
+              <a class="link-inline" href="/work/dany-resconi-libro" data-cursor="link">→ apri progetto</a>
+            </div>
+            <div class="work-card__thumb" data-reveal-item>
+              <CaseThumb
+                href="/work/dany-resconi-libro"
+                title="Finalmente Gluten-free!"
+                imageColor="#a4d65e"
+                ratio="3 / 4"
+              >
+                <span slot="services">Branding · Editorial · Libro</span>
+              </CaseThumb>
+            </div>
+          </article>
+
+          <!-- Card 3: Sito Dany (thumb left, metadata right) -->
+          <article class="work-card work-card--left" data-reveal-group>
+            <div class="work-card__thumb" data-reveal-item>
+              <CaseThumb
+                href="/work/dany-resconi-website"
+                title="Dany Resconi Website"
+                imageColor="#3a86ff"
+                ratio="16 / 10"
+              >
+                <span slot="services">Branding · Squarespace · SEO</span>
+              </CaseThumb>
+            </div>
+            <div class="work-card__meta" data-reveal-item>
+              <dl class="meta-table">
+                <div><dt>Client</dt><dd>Daniele Resconi</dd></div>
+                <div><dt>Role</dt><dd>Branding + Squarespace</dd></div>
+                <div><dt>Year</dt><dd>2023</dd></div>
+                <div><dt>Result</dt><dd>Sito live · ranking SEO ottimo</dd></div>
+              </dl>
+              <h3 class="t-h3 work-card__title">Dany Resconi Website</h3>
+              <p class="t-body-lg work-card__desc">Sito completo per il primo creator italiano gluten-free.</p>
+              <a class="link-inline" href="/work/dany-resconi-website" data-cursor="link">→ apri progetto</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="work__more" data-reveal>
+          <a href="/work" class="link-inline" data-cursor="link">→ See all work</a>
+          <span class="work__sep" aria-hidden="true">·</span>
+          <a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer" class="link-inline" data-cursor="link">Other on Behance ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — They trusted me -->
+  <section class="section section--trust">
+    <div class="section__inner grid">
+      <SectionNumber number="04" label="They trusted me" />
+
+      <div class="trust__content">
+        <h2 class="t-h2" data-reveal>They trusted me.</h2>
+
+        <div class="trust__marquee" data-reveal>
+          <Marquee items={[
+            { label: 'Power Pizza' },
+            { label: 'Daniele Resconi' },
+            { label: 'Power Pizza' },
+            { label: 'Daniele Resconi' },
+          ]} />
+        </div>
+
+        <div class="trust__quotes" data-reveal-group>
+          <figure class="quote" data-reveal-item>
+            <blockquote class="t-body-lg quote__text">
+              "Federico ha capito la voce di Power Pizza al primo briefing. L'app è piaciuta subito, ai conduttori e ai fan."
+            </blockquote>
+            <figcaption class="t-mono quote__cite">
+              — Cliente, Power Pizza
+            </figcaption>
+          </figure>
+          <figure class="quote" data-reveal-item>
+            <blockquote class="t-body-lg quote__text">
+              "Lavorare con Federico significa avere un punto di riferimento dal brand al delivery. Il libro è uscito esattamente come lo immaginavo."
+            </blockquote>
+            <figcaption class="t-mono quote__cite">
+              — Daniele Resconi, Creator
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 — About brief -->
+  <section class="section section--about">
+    <div class="section__inner grid">
+      <SectionNumber number="05" label="About" />
+
+      <div class="about__content">
+        <div class="about__portrait" data-reveal>
+          <div class="about__portrait-placeholder">
+            <span>portrait · placeholder</span>
+          </div>
+        </div>
+
+        <div class="about__text">
+          <h2 class="t-h2" data-reveal>Federico,<br />1995, Milano.</h2>
+          <p class="t-body-lg" data-reveal>
+            Ho iniziato facendo siti per amici, poi per amici di amici.
+          </p>
+          <p class="t-body-lg" data-reveal>
+            Adesso lavoro con creator italiani che vogliono un prodotto — sito, app, libro — fatto bene.
+          </p>
+          <p data-reveal>
+            <a href="/about" class="link-inline" data-cursor="link">→ Più su di me</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 — Get in touch -->
+  <section class="section section--contact section--invert">
+    <div class="section__inner grid">
+      <SectionNumber number="06" label="Get in touch" />
+
+      <div class="contact__content">
+        <h2 class="t-h2" data-reveal>Hai un progetto<br />in mente?<br /><span class="t-italic">Parliamone.</span></h2>
+        <p class="contact__cta" data-reveal>
+          <a href="/contact" class="btn" data-cursor="link">Scrivimi <span aria-hidden="true">→</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    position: relative;
+    padding: 12rem 0;
+  }
+
+  .section--hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 16rem 0 8rem;
+  }
+
+  .section__inner {
+    width: 100%;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
+    position: relative;
+  }
+
+  /* === Hero === */
+  .hero__content {
+    grid-column: 3 / -1;
+  }
+
+  @media (min-width: 1200px) {
+    .hero__content { grid-column: 3 / span 11; }
+  }
+
+  .hero__eyebrow {
+    margin-bottom: 2.4rem;
+    color: var(--text-secondary);
+  }
+
+  .hero__h1 {
+    margin-bottom: 3.2rem;
+    color: var(--brand-yellow);
+  }
+
+  .hero__h1 :global(.words-3d) {
+    color: var(--brand-blue);
+  }
+
+  .hero__sub {
+    max-width: 56ch;
+    margin-bottom: 4rem;
+    color: var(--text-secondary);
+  }
+
+  /* === What I do === */
+  .what__content {
+    grid-column: 3 / -1;
+  }
+  .what__content > h2 { margin-bottom: 6.4rem; }
+
+  .what__cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4.8rem;
+  }
+  @media (min-width: 768px) {
+    .what__cols { grid-template-columns: repeat(3, 1fr); gap: 3.2rem; }
+  }
+
+  .what__num {
+    color: var(--brand-blue);
+    margin-bottom: 1.6rem;
+  }
+
+  .what__lead {
+    margin-bottom: 1.6rem;
+  }
+
+  .what__list {
+    color: var(--text-secondary);
+  }
+  .what__list li { padding: 0.4rem 0; font-size: 1.5rem; }
+
+  /* === Work === */
+  .work__content { grid-column: 3 / -1; }
+  .work__content > h2 { margin-bottom: 6.4rem; }
+
+  .work__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12rem;
+  }
+
+  .work-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3.2rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .work-card {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 4.8rem;
+    }
+    .work-card--right {
+      grid-template-columns: 1fr 1.4fr;
+    }
+  }
+
+  .work-card__title { margin: 1.6rem 0 1.2rem; }
+
+  .meta-table {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    margin-bottom: 2.4rem;
+    border-top: 1px solid rgba(255, 253, 226, 0.18);
+    padding-top: 2rem;
+  }
+
+  .meta-table > div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1.6rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255, 253, 226, 0.08);
+  }
+
+  .meta-table dt,
+  .meta-table dd {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  .meta-table dt {
+    color: var(--text-secondary);
+  }
+
+  .work__more {
+    margin-top: 6.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    text-transform: uppercase;
+  }
+
+  .work__sep { opacity: 0.4; }
+
+  /* === Trust === */
+  .trust__content { grid-column: 3 / -1; }
+  .trust__content > h2 { margin-bottom: 4.8rem; }
+  .trust__marquee { margin-bottom: 6.4rem; }
+
+  .trust__quotes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3.2rem;
+  }
+  @media (min-width: 768px) {
+    .trust__quotes { grid-template-columns: 1fr 1fr; gap: 4.8rem; }
+  }
+
+  .quote { margin: 0; }
+  .quote__text {
+    margin-bottom: 1.6rem;
+    border-left: 2px solid var(--brand-blue);
+    padding-left: 2rem;
+  }
+  .quote__cite { color: var(--text-secondary); }
+
+  /* === About === */
+  .about__content {
+    grid-column: 3 / -1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4.8rem;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .about__content { grid-template-columns: 1fr 1.4fr; gap: 6.4rem; }
+  }
+
+  .about__portrait {
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(135deg, var(--brand-blue), var(--brand-dark-blue));
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+
+  .about__portrait-placeholder {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+  }
+
+  .about__text > * + * { margin-top: 2rem; }
+  .about__text h2 { margin-bottom: 3.2rem; }
+
+  /* === Contact === */
+  .contact__content {
+    grid-column: 3 / -1;
+  }
+  .contact__cta { margin-top: 4rem; }
+
+  /* === Inline link === */
+  .link-inline {
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.2rem;
+    transition: color var(--d-micro) var(--easeOutQuart);
+  }
+
+  .link-inline:hover {
+    color: var(--brand-blue);
+  }
+
+  .section--invert .link-inline:hover {
+    color: var(--brand-blue);
+  }
+</style>

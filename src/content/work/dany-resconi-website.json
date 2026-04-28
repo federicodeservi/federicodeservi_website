@@ -1,0 +1,45 @@
+{
+  "order": 3,
+  "number": "03",
+  "title": "Dany Resconi · Website",
+  "summary": "Sito completo per il primo creator italiano gluten-free.",
+  "client": "Daniele Resconi",
+  "role": "Branding + Squarespace dev + SEO",
+  "year": "2023",
+  "result": "Sito live · ranking SEO ottimo · traffico in crescita",
+  "thumbColor": "#3a86ff",
+  "thumbRatio": "16 / 10",
+  "services": "Branding · Squarespace · SEO",
+  "links": [
+    { "label": "danyresconi.com ↗", "href": "https://danyresconi.com" }
+  ],
+  "context": [
+    "Dany aveva bisogno di un sito che facesse 2 cose: ranking organico per chi cerca info gluten-free in italiano, e raccogliere tutto il suo mondo (libro, ricette, social) in un punto."
+  ],
+  "approach": {
+    "intro": "Strategia content-first, sviluppo Squarespace per autonomia editoriale post-launch.",
+    "steps": [
+      {
+        "num": "02.1",
+        "text": "Brand identity coerente col personaggio (palette, type, voice)"
+      },
+      {
+        "num": "02.2",
+        "text": "Sito Squarespace per autonomia editoriale post-launch"
+      },
+      {
+        "num": "02.3",
+        "text": "SEO on-page + struttura content-first"
+      }
+    ]
+  },
+  "visualNote": "Screenshot full-page + mobile · placeholder",
+  "detailNote": "Sezione ricette o tag system · placeholder",
+  "outcome": [
+    { "label": "Sito", "value": "Live dal 2023" },
+    { "label": "Ranking SEO", "value": "Top per parole-chiave gluten-free IT" },
+    { "label": "Traffico", "value": "In crescita stabile" },
+    { "label": "Autonomia", "value": "Cliente gestisce contenuti senza supporto tecnico" }
+  ],
+  "closing": "Un sito che lavora anche quando il cliente dorme."
+}
