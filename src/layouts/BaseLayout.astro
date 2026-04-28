@@ -10,6 +10,7 @@ import Cursor from '../components/Cursor.astro';
 import PageLoader from '../components/PageLoader.astro';
 import Curtain from '../components/Curtain.astro';
 import Footer from '../components/Footer.astro';
+import Topbar from '../components/Topbar.astro';
 import { ClientRouter } from 'astro:transitions';
 import { u } from '../lib/url';
 
@@ -59,7 +60,7 @@ const fullTitle = title === 'Federico de Servi' ? title : `${title} · Federico 
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <meta name="theme-color" content="#051236" />
+    <meta name="theme-color" content="#0A0524" />
 
     {jsonLd && (
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
@@ -72,6 +73,7 @@ const fullTitle = title === 'Federico de Servi' ? title : `${title} · Federico 
     <Curtain />
     <Cursor />
     <SmoothScroll />
+    <Topbar />
 
     <main id="main">
       <slot />

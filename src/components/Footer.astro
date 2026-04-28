@@ -4,114 +4,112 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <div class="footer__inner">
+  <div class="footer__top">
     <div class="footer__col footer__col--name">
       <p class="footer__name">Federico de Servi</p>
       <p class="footer__role">Designer + brand-builder + flutter-dev</p>
-      <p class="footer__city">Milano, IT</p>
+      <p class="footer__role">Milano, IT — works remote</p>
     </div>
 
-    <div class="footer__col footer__col--contact">
-      <a href="mailto:federico@federicodeservi.com" class="footer__email">federico@federicodeservi.com</a>
-      <ul class="footer__socials">
-        <li><a href="https://www.linkedin.com/in/federicodeservi" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
-        <li><a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer">Behance ↗</a></li>
-        <li><a href="https://www.instagram.com/federicodeservi" target="_blank" rel="noopener noreferrer">Instagram ↗</a></li>
-      </ul>
+    <div class="footer__col">
+      <h4>Sitemap</h4>
+      <a href={u('/work')}>Work</a>
+      <a href={u('/about')}>About</a>
+      <a href={u('/contact')}>Contact</a>
     </div>
 
-    <div class="footer__col footer__col--nav">
-      <ul class="footer__nav">
-        <li><a href={u('/work')}>Work</a></li>
-        <li><a href={u('/about')}>About</a></li>
-        <li><a href={u('/contact')}>Contact</a></li>
-      </ul>
+    <div class="footer__col">
+      <h4>Elsewhere</h4>
+      <a href="https://www.linkedin.com/in/federicodeservi" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+      <a href="https://www.behance.net/federicodeservi" target="_blank" rel="noopener noreferrer">Behance ↗</a>
+      <a href="https://www.instagram.com/federicodeservi" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
     </div>
 
-    <div class="footer__col footer__col--credits">
-      <p>© {currentYear} · Made in Milano</p>
-      <p>Switzer + Instrument Serif</p>
-      <p>Built with Astro</p>
+    <div class="footer__col">
+      <h4>Email</h4>
+      <a href="mailto:federico@federicodeservi.com">federico@<br />federicodeservi.com</a>
     </div>
+  </div>
+
+  <div class="footer__bot">
+    <span>© {currentYear} — Made in Milano</span>
+    <span>Switzer + Inter + JetBrains Mono</span>
+    <span>Built with Astro</span>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding: 8rem var(--padding-x) 4rem;
-    border-top: 1px solid rgba(255, 253, 226, 0.12);
-    margin-top: 12rem;
+    padding: 6.4rem var(--pad) 4rem;
+    border-top: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
   }
 
-  .footer__inner {
+  .footer__top {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 4rem;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 6.4rem;
+    margin-bottom: 6.4rem;
   }
 
-  @media (min-width: 768px) {
-    .footer__inner {
-      grid-template-columns: 1.2fr 1fr 0.6fr 1fr;
-      gap: 3.2rem;
-    }
-  }
-
-  .footer__col p,
-  .footer__col li {
-    font-family: var(--font-body);
-    font-size: 1.4rem;
-    line-height: 1.6em;
-    color: var(--text-secondary);
-  }
-
-  .footer__name {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 2.4rem !important;
-    line-height: 1em !important;
-    color: var(--brand-yellow) !important;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.8rem;
-  }
-
-  .footer__email {
-    display: inline-block;
-    color: var(--brand-yellow);
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 0.2rem;
-    margin-bottom: 1.6rem;
-    font-size: 1.6rem;
-  }
-
-  .footer__socials,
-  .footer__nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .footer__nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1.6rem;
-  }
-
-  .footer__socials a,
-  .footer__nav a {
-    color: var(--brand-yellow);
-    transition: color var(--d-micro) var(--easeOutQuart);
-  }
-
-  .footer__socials a:hover,
-  .footer__nav a:hover {
-    color: var(--brand-blue);
-  }
-
-  .footer__credits p {
+  .footer__col h4 {
     font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 1.4rem;
+    font-weight: 400;
+  }
+
+  .footer__col--name .footer__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: -0.012em;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+  }
+
+  .footer__col--name .footer__role {
+    color: var(--ink-muted);
+    font-size: 1.4rem;
+    line-height: 1.5;
+  }
+
+  .footer__col a {
+    display: block;
+    color: var(--ink);
+    padding: 0.3rem 0;
+    font-size: 1.3rem;
+    transition: color 200ms, transform 200ms;
+  }
+
+  .footer__col a:hover {
+    color: var(--accent-warm);
+    transform: translateX(4px);
+  }
+
+  .footer__bot {
+    padding-top: 2.4rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 900px) {
+    .footer__top {
+      grid-template-columns: 1fr;
+      gap: 4rem;
+      margin-bottom: 4rem;
+    }
   }
 </style>

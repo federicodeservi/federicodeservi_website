@@ -1,34 +1,61 @@
 ---
-// Custom cursor — mix-blend-difference, lerp trail, off below 901px.
+// v5 Y2K Glitch cursor — dot + label, lerp trail, hidden ≤ 900px.
 ---
 
-<div class="cursor" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-label" id="cursor-label" aria-hidden="true"></div>
 
 <style>
-  .cursor {
-    --mouse-x: 0px;
-    --mouse-y: 0px;
+  .cursor-dot {
     position: fixed;
-    left: 0;
     top: 0;
-    transform: translate3d(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%), 0);
-    pointer-events: none;
-    mix-blend-mode: difference;
-    background: var(--brand-yellow);
-    width: 1.6rem;
-    height: 1.6rem;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--ink);
     border-radius: 50%;
-    transition: width var(--d-hover) var(--easeOutQuart),
-                height var(--d-hover) var(--easeOutQuart),
-                opacity var(--d-hover) var(--easeOutQuart);
+    pointer-events: none;
     z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition:
+      width 250ms var(--easing-settle),
+      height 250ms var(--easing-settle),
+      background 200ms;
+    mix-blend-mode: difference;
     opacity: 0;
-    will-change: transform, width, height;
+    will-change: transform;
+  }
+  .cursor-dot.is-visible { opacity: 1; }
+  .cursor-dot.hover-link {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-warm);
+    mix-blend-mode: normal;
+  }
+  .cursor-dot.hover-image {
+    width: 100px;
+    height: 100px;
+    background: var(--accent-warm);
+    mix-blend-mode: normal;
   }
 
-  .cursor.is-visible { opacity: 1; }
-  .cursor--hover-link { width: 4rem; height: 4rem; }
-  .cursor--hover-image { width: 8rem; height: 8rem; }
+  .cursor-label {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 10000;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--bg);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 200ms;
+    white-space: nowrap;
+  }
+  .cursor-label.show { opacity: 1; }
 </style>
 
 <script>
@@ -43,13 +70,17 @@
       cleanup = null;
     }
 
-    const cursor = document.querySelector<HTMLElement>('.cursor');
-    if (!cursor) return;
+    const dot = document.getElementById('cursor-dot');
+    const label = document.getElementById('cursor-label');
+    if (!dot || !label) return;
+
     if (reducedMotion() || !isDesktop()) {
-      cursor.style.display = 'none';
+      dot.style.display = 'none';
+      label.style.display = 'none';
       return;
     }
-    cursor.style.display = '';
+    dot.style.display = '';
+    label.style.display = '';
 
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
@@ -59,56 +90,63 @@
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
       my = e.clientY;
-      cursor.classList.add('is-visible');
+      dot.classList.add('is-visible');
     };
-
-    const onLeave = () => cursor.classList.remove('is-visible');
+    const onLeave = () => dot.classList.remove('is-visible');
 
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseleave', onLeave);
 
     const tick = () => {
-      cx += (mx - cx) * 0.18;
-      cy += (my - cy) * 0.18;
-      cursor.style.setProperty('--mouse-x', `${cx}px`);
-      cursor.style.setProperty('--mouse-y', `${cy}px`);
+      cx += (mx - cx) * 0.25;
+      cy += (my - cy) * 0.25;
+      dot.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+      label.style.transform = `translate(${cx + 24}px, ${cy + 24}px)`;
       raf = requestAnimationFrame(tick);
     };
     tick();
 
-    const onEnter = (e: Event) => {
-      const t = e.currentTarget as HTMLElement;
-      const kind = t.dataset.cursor;
-      cursor.classList.remove('cursor--hover-link', 'cursor--hover-image');
-      if (kind === 'link') cursor.classList.add('cursor--hover-link');
-      if (kind === 'image') cursor.classList.add('cursor--hover-image');
-    };
-    const onLeaveEl = () => {
-      cursor.classList.remove('cursor--hover-link', 'cursor--hover-image');
-    };
-
-    const targets = document.querySelectorAll<HTMLElement>('[data-cursor]');
-    targets.forEach((el) => {
-      el.addEventListener('mouseenter', onEnter);
-      el.addEventListener('mouseleave', onLeaveEl);
+    const linkSel = 'a, button, .case-thumb, .logo-pill, .nav-link';
+    const linkEls = document.querySelectorAll<HTMLElement>(linkSel);
+    const onLinkEnter = () => dot.classList.add('hover-link');
+    const onLinkLeave = () => dot.classList.remove('hover-link');
+    linkEls.forEach((el) => {
+      el.addEventListener('mouseenter', onLinkEnter);
+      el.addEventListener('mouseleave', onLinkLeave);
     });
 
-    // Auto-attach link state to interactive elements
-    const interactive = document.querySelectorAll<HTMLElement>(
-      'a:not([data-cursor]), button:not([data-cursor])',
-    );
-    interactive.forEach((el) => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('cursor--hover-link'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('cursor--hover-link'));
+    const cursorEls = document.querySelectorAll<HTMLElement>('[data-cursor]');
+    const onImgEnter = (e: Event) => {
+      const t = e.currentTarget as HTMLElement;
+      const kind = t.dataset.cursor || '';
+      if (kind === 'link' || kind === '') {
+        dot.classList.add('hover-link');
+        return;
+      }
+      dot.classList.add('hover-image');
+      label.textContent = kind;
+      label.classList.add('show');
+    };
+    const onImgLeave = () => {
+      dot.classList.remove('hover-image', 'hover-link');
+      label.classList.remove('show');
+    };
+    cursorEls.forEach((el) => {
+      el.addEventListener('mouseenter', onImgEnter);
+      el.addEventListener('mouseleave', onImgLeave);
     });
 
     cleanup = () => {
       cancelAnimationFrame(raf);
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseleave', onLeave);
-      targets.forEach((el) => {
-        el.removeEventListener('mouseenter', onEnter);
-        el.removeEventListener('mouseleave', onLeaveEl);
+      linkEls.forEach((el) => {
+        el.removeEventListener('mouseenter', onLinkEnter);
+        el.removeEventListener('mouseleave', onLinkLeave);
+      });
+      cursorEls.forEach((el) => {
+        el.removeEventListener('mouseenter', onImgEnter);
+        el.removeEventListener('mouseleave', onImgLeave);
       });
     };
   };
